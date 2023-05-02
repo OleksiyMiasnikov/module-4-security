@@ -1,4 +1,4 @@
-package com.epam.esm.security;
+package com.epam.esm.config;
 
 import lombok.Getter;
 import lombok.Setter;

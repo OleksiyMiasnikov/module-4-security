@@ -36,10 +36,17 @@ public class WebSecurityConfig {
                 .securityMatcher("/**")
                 .authorizeHttpRequests(registry -> registry
                         .requestMatchers("/login").permitAll()
-                        .requestMatchers("/hello").permitAll()
+                        .requestMatchers("/signup").permitAll()
+
+                        .requestMatchers("/tags").permitAll()
+                        .requestMatchers("/certificates").permitAll()
+                        .requestMatchers("/certificates_with_tags").permitAll()
                         .requestMatchers("/users").permitAll()
-                        .requestMatchers("/users/user").permitAll()
+                        .requestMatchers("/orders").permitAll()
+
+                        .requestMatchers("/users/**").hasAuthority(Role.USER.name())
                         .requestMatchers("/admin/**").hasAuthority(Role.ADMIN.name())
+
                         .anyRequest().authenticated()
                 );
         return httpSecurity.build();

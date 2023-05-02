@@ -1,16 +1,33 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.model.login.LoginRequest;
+import com.epam.esm.model.login.LoginResponse;
 import com.epam.esm.security.UserPrincipal;
+import com.epam.esm.service.AuthorizationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("")
 @RequiredArgsConstructor
-public class HelloController {
+@RequestMapping
+public class AuthorizationController {
+
+    private final AuthorizationService service;
+
+    @GetMapping("/login")
+    public LoginResponse login(@RequestBody @Validated LoginRequest request){
+        return service.attemptLogin(request.getName(), request.getPassword());
+    }
+
+    @GetMapping("/signup")
+    public String signUp(){
+        return "signup";
+    }
 
     @GetMapping("/secured")
     public String secured(@AuthenticationPrincipal UserPrincipal principal) {
@@ -32,8 +49,6 @@ public class HelloController {
                 principal.getAuthorities();
     }
 
-    @GetMapping("/hello")
-    public String hello() {
-        return "Hello!";
-    }
+
 }
+
