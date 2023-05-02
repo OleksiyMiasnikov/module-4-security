@@ -10,8 +10,8 @@ import lombok.Getter;
 public class CreateUserOrderRequest {
     @NotNull(message = "Field 'userId' can not be empty!")
     @Min(value = 1, message = "Field 'userId' should be more then 0!")
-    private int userId;
+    private Long userId;
     @NotNull(message = "Field 'certificateWithTagId' can not be empty!")
     @Min(value = 1, message = "Field 'certificateWithTagId' should be more then 0!")
-    private int certificateWithTagId;
+    private Long certificateWithTagId;
 }

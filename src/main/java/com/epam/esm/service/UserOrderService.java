@@ -76,8 +76,8 @@ public class UserOrderService {
         UserWithMaxTotalCost userWithMaxTotalCost =
                 repo.findUsersWithTotalCost();
 
-        int userId = userWithMaxTotalCost.getUserId();
-        int tagId = repo.findMostlyUsedTag(userId).getTagId();
+        Long userId = userWithMaxTotalCost.getUserId();
+        Long tagId = repo.findMostlyUsedTag(userId).getTagId();
         Double totalCost = userWithMaxTotalCost.getTotalCost();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User is not present!"));

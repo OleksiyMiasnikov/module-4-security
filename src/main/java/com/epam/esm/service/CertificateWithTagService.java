@@ -48,7 +48,7 @@ public class CertificateWithTagService{
 
         // if tag exists in the database, tagId get from database
         // else a new tag will be created with new tagId
-        int tagId;
+        Long tagId;
         List<Tag> tagList = tagRepo.findByName(request.getTag());
         if (tagList.size() == 0) {
             Tag tag = Tag.builder()
@@ -63,7 +63,7 @@ public class CertificateWithTagService{
         certificate.setCreateDate(DateUtil.getDate());
         certificate.setLastUpdateDate(DateUtil.getDate());
 
-        int certificateId = certificateRepo.save(certificate).getId();
+        Long certificateId = certificateRepo.save(certificate).getId();
         CertificateWithTag certificateWithTag = CertificateWithTag.builder()
                 .tagId(tagId)
                 .certificateId(certificateId)
@@ -93,7 +93,7 @@ public class CertificateWithTagService{
      */
     public Page<CertificateWithTag> findByTagNames(Pageable pageable, List<String> tagList) {
         log.info("Getting all certificates by tag.");
-        List<Integer> tagIds = new ArrayList<>();
+        List<Long> tagIds = new ArrayList<>();
         for (String name : tagList) {
             List<Tag> tags = tagRepo.findByName(name);
             if (tags.size() > 0) tagIds.add(tags.get(0).getId());
@@ -113,7 +113,7 @@ public class CertificateWithTagService{
         Set<Certificate> set = new HashSet<>(certificateRepo.findByNameContaining(pattern));
         set.addAll(certificateRepo.findByDescriptionContaining(pattern));
 
-        List<Integer> listOfCertificateId = new ArrayList<>(set.stream().map(Certificate::getId).toList());
+        List<Long> listOfCertificateId = new ArrayList<>(set.stream().map(Certificate::getId).toList());
 
         return repo.findByCertificateId(listOfCertificateId);
     }
@@ -125,7 +125,7 @@ public class CertificateWithTagService{
      * @return {@link CertificateWithTag} CertificateWithTag
      * @throws CertificateWithTagNotFoundException if a certificate with tag with a given id doesn't exist
      */
-    public CertificateWithTag findById(int id) {
+    public CertificateWithTag findById(Long id) {
         log.info("Locking for certificate with tag by id: {}.", id);
 
         return repo.findById(id)

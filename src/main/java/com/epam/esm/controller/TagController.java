@@ -30,7 +30,7 @@ public class TagController{
     }
 
     @GetMapping("/{id}")
-    public Tag findById(@PathVariable("id") int id) {
+    public Tag findById(@PathVariable("id") Long id) {
         log.info("Locking for tag by id: {}.", id);
         return service.findById(id);
     }
@@ -46,7 +46,7 @@ public class TagController{
     }
 
     @DeleteMapping("/{id}")
-    public boolean delete(@PathVariable("id") int id) {
+    public boolean delete(@PathVariable("id") Long id) {
         log.info("Deleting tag by id: {}.", id);
         return service.delete(id);
     }

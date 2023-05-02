@@ -1,7 +1,7 @@
 package com.epam.esm.model.entity;
 
 public interface UserWithMaxTotalCost {
-    Integer getUserId();
+    Long getUserId();
     Double getTotalCost();
 }
 

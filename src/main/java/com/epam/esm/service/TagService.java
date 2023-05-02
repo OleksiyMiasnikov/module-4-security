@@ -44,7 +44,7 @@ public class TagService {
      * @return {@link Tag} tag.
      * @throws TagNotFoundException if a tag with a given id doesn't exist.
      */
-    public Tag findById(int id) {
+    public Tag findById(Long id) {
         log.info("Getting tag by id: {}.", id);
         Optional<Tag> result = repo.findById(id);
         return result.orElseThrow(() -> new TagNotFoundException(
@@ -85,7 +85,7 @@ public class TagService {
      * @param id tag id
      * @return boolean result of removing tag with appropriate id.
      */
-    public boolean delete(int id) {
+    public boolean delete(Long id) {
         log.info("Deleting tag by id: {}.", id);
         Optional<Tag> deletedTag = repo.findById(id);
         if (deletedTag.isEmpty()) return false;

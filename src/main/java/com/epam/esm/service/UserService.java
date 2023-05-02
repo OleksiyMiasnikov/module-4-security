@@ -28,7 +28,7 @@ public class UserService {
      * @return {@link User} user
      * @throws UserNotFoundException if a user with a given id doesn't exist
      */
-    public User findById(int id) {
+    public User findById(Long id) {
         log.info("Locking for user by id: {}.", id);
         Optional<User> result = repo.findById(id);
         return result.orElseThrow(() -> new UserNotFoundException(

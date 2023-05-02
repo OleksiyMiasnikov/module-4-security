@@ -27,7 +27,7 @@ public class UserController {
     private final UserMapper mapper;
 
     @GetMapping("/{id}")
-    public UserDTO findById(@PathVariable("id") int id) {
+    public UserDTO findById(@PathVariable("id") Long id) {
         log.info("Locking for user by id: {}.", id);
         return mapper.toDTO(service.findById(id));
     }

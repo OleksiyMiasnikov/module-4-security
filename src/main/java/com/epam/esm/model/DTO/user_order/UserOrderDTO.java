@@ -6,9 +6,9 @@ import lombok.Getter;
 @Getter
 @Builder
 public class UserOrderDTO {
-    private int id;
+    private Long id;
     private String userName;
-    private int CertificateWithTagId;
+    private Long CertificateWithTagId;
     private String tagName;
     private String certificateName;
     private String description;

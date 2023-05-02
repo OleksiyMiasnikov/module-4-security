@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserOrderRepository extends JpaRepository<UserOrder, Integer> {
+public interface UserOrderRepository extends JpaRepository<UserOrder, Long> {
 
-    List<UserOrder> findByUserId(int id);
+    List<UserOrder> findByUserId(Long id);
 
     @Query("""
            select
@@ -41,5 +41,5 @@ public interface UserOrderRepository extends JpaRepository<UserOrder, Integer> {
             order by countTag DESC
             limit 1
             """)
-    MostlyUsedTagIdByUserId findMostlyUsedTag(int userId);
+    MostlyUsedTagIdByUserId findMostlyUsedTag(Long userId);
 }

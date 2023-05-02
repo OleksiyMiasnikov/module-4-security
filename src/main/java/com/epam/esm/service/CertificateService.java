@@ -57,7 +57,7 @@ public class CertificateService {
      * @return {@link Certificate} certificate
      * @throws CertificateNotFoundException if a certificate with a given id doesn't exist
      */
-    public Certificate findById(int id) {
+    public Certificate findById(Long id) {
         log.info("Locking for certificate by id: {}.", id);
 
         return repo.findById(id)
@@ -76,7 +76,7 @@ public class CertificateService {
      * @return {@link Certificate} updated certificate
      */
     @Transactional
-    public Certificate update(int id, Certificate certificate) {
+    public Certificate update(Long id, Certificate certificate) {
         log.info("Updating certificate by id: {}.", id);
 
         Certificate oldCertificate = findById(id);
@@ -104,7 +104,7 @@ public class CertificateService {
      * @param id certificate id
      * @return boolean result of removing certificate with appropriate id
      */
-    public boolean delete(int id) {
+    public boolean delete(Long id) {
         log.info("Deleting certificate by id: {}.", id);
         Optional<Certificate> deletedCertificate = repo.findById(id);
         if (deletedCertificate.isPresent()) {

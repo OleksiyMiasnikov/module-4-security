@@ -9,7 +9,7 @@ import org.springframework.hateoas.RepresentationModel;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CertificateDTO extends RepresentationModel<CertificateDTO> {
-    private int id;
+    private Long id;
     private String name;
     private String description;
     private Double price;

@@ -12,7 +12,7 @@ import java.util.Collection;
 @Builder
 public class UserPrincipal implements UserDetails {
 
-    private final int userId;
+    private final Long userId;
 
     private final String name;
 

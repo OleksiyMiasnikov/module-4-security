@@ -7,7 +7,7 @@ import org.springframework.hateoas.RepresentationModel;
 @Getter
 @Builder
 public class CertificateWithTagDTO extends RepresentationModel<CertificateWithTagDTO> {
-    private int id;
+    private Long id;
     private String tag;
     private String name;
     private String description;

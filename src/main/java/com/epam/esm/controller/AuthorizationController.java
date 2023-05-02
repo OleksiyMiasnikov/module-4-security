@@ -1,7 +1,7 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.model.login.LoginRequest;
-import com.epam.esm.model.login.LoginResponse;
+import com.epam.esm.model.DTO.login.LoginRequest;
+import com.epam.esm.model.DTO.login.LoginResponse;
 import com.epam.esm.security.UserPrincipal;
 import com.epam.esm.service.AuthorizationService;
 import lombok.RequiredArgsConstructor;

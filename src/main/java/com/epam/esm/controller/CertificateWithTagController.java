@@ -60,7 +60,7 @@ public class CertificateWithTagController{
     }
 
     @GetMapping("/{id}")
-    public CertificateWithTagDTO findById(@PathVariable("id") int id) {
+    public CertificateWithTagDTO findById(@PathVariable("id") Long id) {
         log.info("Locking for certificate with tag by id: {}.", id);
         return mapper.toDTO(service.findById(id));
     }

@@ -14,10 +14,10 @@ import lombok.NoArgsConstructor;
 public class CertificateWithTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     @Column(name="tag_id")
-    private int tagId;
+    private Long tagId;
     @Column(name="certificate_id")
-    private int certificateId;
+    private Long certificateId;
 
 }
