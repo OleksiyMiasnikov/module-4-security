@@ -22,6 +22,16 @@ public class HelloController {
                 principal.getAuthorities();
     }
 
+    @GetMapping("/admin")
+    public String adminEndpoint(@AuthenticationPrincipal UserPrincipal principal) {
+        return "This is secured admin endpoint!\n" +
+                "You are authorized!\n" +
+                "Name: " +
+                principal.getName() +
+                "\nRole: " +
+                principal.getAuthorities();
+    }
+
     @GetMapping("/hello")
     public String hello() {
         return "Hello!";

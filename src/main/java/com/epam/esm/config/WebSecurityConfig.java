@@ -1,5 +1,6 @@
 package com.epam.esm.config;
 
+import com.epam.esm.model.entity.Role;
 import com.epam.esm.security.CustomUserDetailsService;
 import com.epam.esm.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/hello").permitAll()
                         .requestMatchers("/users").permitAll()
                         .requestMatchers("/users/user").permitAll()
+                        .requestMatchers("/admin/**").hasAuthority(Role.ADMIN.name())
                         .anyRequest().authenticated()
                 );
         return httpSecurity.build();

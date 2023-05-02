@@ -5,6 +5,7 @@ import com.epam.esm.model.login.LoginResponse;
 import com.epam.esm.security.JwtIssuer;
 import com.epam.esm.security.UserPrincipal;
 import com.epam.esm.security.UserPrincipalAuthenticationToken;
+import com.epam.esm.service.AuthorizationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,27 +25,12 @@ import java.util.List;
 @RequestMapping("/login")
 public class AuthController {
 
-    private final JwtIssuer issuer;
-
-    private final AuthenticationManager authenticationManager;
+    private final AuthorizationService service;
 
     @GetMapping()
     public LoginResponse login(@RequestBody @Validated LoginRequest request){
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getName(), request.getPassword())
-        );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
-
-        List<String> roles = principal.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList();
-
-        return LoginResponse.builder()
-                .accessToken(issuer.issue(principal.getUserId(), principal.getName(), roles))
-                .build();
+        return service.attemptLogin(request.getName(), request.getPassword());
     }
+
 }
 

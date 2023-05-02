@@ -1,5 +1,6 @@
 package com.epam.esm.model.DTO.user;
 
+import com.epam.esm.model.entity.Role;
 import lombok.*;
 
 @Getter
@@ -10,5 +11,5 @@ import lombok.*;
 public class UserDTO {
     private int id;
     private String name;
-    private String role;
+    private Role role;
 }

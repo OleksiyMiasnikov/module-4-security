@@ -16,7 +16,9 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
     private final JwtDecoder decoder;
+
     private final JwtPrincipalConverter converter;
 
     @Override
