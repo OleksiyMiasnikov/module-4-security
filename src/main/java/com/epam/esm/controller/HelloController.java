@@ -1,6 +1,8 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,8 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
 
     @GetMapping("/secured")
-    public String secured() {
-        return "This is secured endpoint!";
+    public String secured(@AuthenticationPrincipal UserPrincipal principal) {
+        return "This is secured endpoint!\n" +
+                "You are authorized!\n" +
+                "Name: " +
+                principal.getName() +
+                "\nRole: " +
+                principal.getAuthorities();
     }
 
     @GetMapping("/hello")
