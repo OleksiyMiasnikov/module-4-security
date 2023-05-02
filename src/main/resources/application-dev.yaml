@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/module_3_db
+    url: jdbc:mysql://localhost:3306/module_4_db
     username: root
     password: 18De1975
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -12,4 +12,4 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
 security:
   jwt:
-    secret-key: Betterl@teth@nnever.
+    secret-key: bETTERl@TEtHE@NnEVER~

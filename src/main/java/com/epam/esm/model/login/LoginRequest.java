@@ -1,4 +1,4 @@
-package com.epam.esm.model;
+package com.epam.esm.model.login;
 
 import lombok.Builder;
 import lombok.Getter;

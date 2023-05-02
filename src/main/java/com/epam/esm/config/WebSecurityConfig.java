@@ -1,5 +1,6 @@
-package com.epam.esm.security;
+package com.epam.esm.config;
 
+import com.epam.esm.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +25,9 @@ public class WebSecurityConfig {
                 .formLogin().disable()
                 .securityMatcher("/**")
                 .authorizeHttpRequests(registry -> registry
-                        .requestMatchers("/hello", "/login").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/hello").permitAll()
+                        .requestMatchers("/users").permitAll()
                         .anyRequest().authenticated()
                 );
         return httpSecurity.build();

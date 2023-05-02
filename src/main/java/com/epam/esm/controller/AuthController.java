@@ -1,7 +1,7 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.model.LoginRequest;
-import com.epam.esm.model.LoginResponse;
+import com.epam.esm.model.login.LoginRequest;
+import com.epam.esm.model.login.LoginResponse;
 import com.epam.esm.security.JwtIssuer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
