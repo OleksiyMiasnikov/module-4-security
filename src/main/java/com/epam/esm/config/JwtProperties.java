@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties("security.jwt")
 public class JwtProperties {
     /**
-     * Secret key used for issuing JWT
+     * Secret key used for issuing and decoding JWT
      */
     private String secretKey;
 }

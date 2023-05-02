@@ -11,6 +11,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+        format-sql: true
 security:
   jwt:
     secret-key: bETTERl@TEtHE@NnEVER~

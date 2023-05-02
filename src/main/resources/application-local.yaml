@@ -12,4 +12,4 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
 security:
   jwt:
-    secret-key: Betterl@teth@.
+    secret-key: bETTERl@TEtHE@NnEVER~

@@ -1,8 +1,8 @@
-package com.epam.esm.security;
+package com.epam.esm.service;
 
 import com.epam.esm.exception.UserNotFoundException;
 import com.epam.esm.model.entity.User;
-import com.epam.esm.service.UserService;
+import com.epam.esm.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

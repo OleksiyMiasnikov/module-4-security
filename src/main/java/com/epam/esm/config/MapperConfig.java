@@ -14,14 +14,24 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Configures ModelMapper for mapping project entities
+ */
 @Configuration
 public class MapperConfig {
     private static final String PATTERN_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+
+    /**
+     * Configures ModelMapper for map {@link  Certificate} entity
+     */
     @Bean
     public ModelMapper certificateModelMapper(){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(PATTERN_FORMAT)
-                .withZone(ZoneId.systemDefault());
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern(PATTERN_FORMAT).withZone(ZoneId.systemDefault());
+
         ModelMapper mapper = new ModelMapper();
+
+        // define property for mapping from CreateCertificateRequest to Certificate
 
         TypeMap<CreateCertificateRequest, Certificate> propertyRequestToCertificate =
                 mapper.createTypeMap(CreateCertificateRequest.class, Certificate.class);
@@ -31,6 +41,9 @@ public class MapperConfig {
         propertyRequestToCertificate.addMappings(
                 m -> m.map((certificateRequest) -> DateUtil.getDate(),
                         Certificate::setLastUpdateDate));
+
+
+        // define property for mapping from Certificate to {@link CertificateDTO}
 
         TypeMap<Certificate, CertificateDTO> propertyCertificateToDTO =
                 mapper.createTypeMap(Certificate.class, CertificateDTO.class);
