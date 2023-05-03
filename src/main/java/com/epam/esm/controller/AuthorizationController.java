@@ -3,7 +3,7 @@ package com.epam.esm.controller;
 import com.epam.esm.model.DTO.login.LoginRequest;
 import com.epam.esm.model.DTO.login.LoginResponse;
 import com.epam.esm.security.UserPrincipal;
-import com.epam.esm.service.AuthorizationService;
+import com.epam.esm.service.AuthenticateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping
 public class AuthorizationController {
 
-    private final AuthorizationService service;
+    private final AuthenticateService service;
 
     @GetMapping("/login")
     public LoginResponse login(@RequestBody @Validated LoginRequest request){

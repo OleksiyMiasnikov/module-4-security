@@ -1,7 +1,7 @@
 package com.epam.esm.security.filter;
 
-import com.epam.esm.security.JwtDecoder;
-import com.epam.esm.security.JwtPrincipalConverter;
+import com.epam.esm.security.jwt.JwtDecoder;
+import com.epam.esm.security.jwt.JwtPrincipalConverter;
 import com.epam.esm.security.UserPrincipalAuthenticationToken;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -17,14 +16,27 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Optional;
 
+/**
+ * Gets token from request, decoded it, convert to UserPrincipal,
+ * create {@link UserPrincipalAuthenticationToken}
+ * and put it into SecurityContextHolder
+ *
+ */
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
     private final JwtDecoder decoder;
-
     private final JwtPrincipalConverter converter;
 
+    /**
+     * Gets token from request, decoded it, convert to UserPrincipal,
+     * create {@link UserPrincipalAuthenticationToken}
+     * and put it into SecurityContextHolder
+     *
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @param filterChain FilterChain
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,

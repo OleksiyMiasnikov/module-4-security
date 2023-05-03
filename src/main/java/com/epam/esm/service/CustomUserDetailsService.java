@@ -12,14 +12,29 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+
+/**
+ * Gets user with a given name from database
+ * and creates {@link UserDetails} with user details.
+ *
+ */
 @Component
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserService userService;
+
+    /**
+     * Gets user with a given name from database
+     * and creates {@link UserDetails} with user details
+     *
+     * @param name user name
+     * @return {@link UserDetails} with user details
+     * @throws UsernameNotFoundException if user is absent in database
+     */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        List<User> users = userService.findByName(username);
+    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+        List<User> users = userService.findByName(name);
         if (users.size() == 0) {
             throw new UserNotFoundException("Unknown user");
         }
