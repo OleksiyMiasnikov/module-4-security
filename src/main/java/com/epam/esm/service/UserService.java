@@ -1,5 +1,6 @@
 package com.epam.esm.service;
 
+import com.epam.esm.exception.TagNotFoundException;
 import com.epam.esm.exception.UserNotFoundException;
 import com.epam.esm.model.entity.User;
 import com.epam.esm.repository.UserRepository;
@@ -62,9 +63,10 @@ public class UserService {
         return repo.save(user);
     }
 
-    public List<User> findByName(String name) {
+    public User findByName(String name) {
         log.info("Locking for user by name: {}.", name);
-        return repo.findByName(name);
+        return repo.findByName(name).orElseThrow(() -> new TagNotFoundException(
+                "Requested user is not found (name=" + name + ")"));
     }
 
 }

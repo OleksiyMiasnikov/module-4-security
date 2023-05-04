@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -36,16 +38,20 @@ public class SecurityConfig {
             .formLogin().disable()
             .securityMatcher("/**")
             .authorizeHttpRequests(registry -> registry
-                    .requestMatchers("/**").permitAll()
-                    .requestMatchers("/login").permitAll()
-                    .requestMatchers("/signup").permitAll()
-
-                    .requestMatchers("/tags").permitAll()
-                    .requestMatchers("/certificates").permitAll()
-                    .requestMatchers("/certificates_with_tags").permitAll()
-                    .requestMatchers("/users").permitAll()
-                    .requestMatchers("/orders").permitAll()
-
+//                          .requestMatchers("/**").permitAll()
+                            .requestMatchers("/login").permitAll()
+                            .requestMatchers("/signup").permitAll()
+//                            .requestMatchers(GET, "/**").hasAuthority(Role.GUEST.name())
+//                            .requestMatchers(GET, "/**").hasAuthority(Role.USER.name())
+//                            .requestMatchers(POST, "/**").hasAuthority(Role.USER.name())
+//                            .requestMatchers("/**").hasAuthority(Role.ADMIN.name())
+//
+//                    .requestMatchers("/tags").permitAll()
+//                    .requestMatchers("/certificates").permitAll()
+//                    .requestMatchers("/certificates_with_tags").permitAll()
+//                    .requestMatchers("/users").permitAll()
+//                    .requestMatchers("/orders").permitAll()
+//
                     .requestMatchers("/users/**").hasAuthority(Role.USER.name())
                     .requestMatchers("/admin/**").hasAuthority(Role.ADMIN.name())
 

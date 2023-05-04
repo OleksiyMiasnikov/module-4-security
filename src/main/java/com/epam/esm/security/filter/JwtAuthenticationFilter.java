@@ -16,7 +16,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Optional;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 /**
+ * Class JwtAuthenticationFilter extends {@link OncePerRequestFilter}
  * Gets token from request, decoded it, convert to UserPrincipal,
  * create {@link UserPrincipalAuthenticationToken}
  * and put it into SecurityContextHolder
@@ -46,9 +49,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .map(decoder::decode)
                 .map(converter::convert)
                 .map(UserPrincipalAuthenticationToken::new)
-                .ifPresent(authentication -> SecurityContextHolder
-                        .getContext()
-                        .setAuthentication(authentication));
+                .ifPresent(authentication ->
+                        SecurityContextHolder
+                            .getContext()
+                            .setAuthentication(authentication));
 
         filterChain.doFilter(request, response);
     }
@@ -61,9 +65,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * or Optional.empty() if it absents
      */
     private Optional<String> extractTokenFromRequest(HttpServletRequest request) {
-        var token = request.getHeader("Authorization");
+        var token = request.getHeader(AUTHORIZATION);
         if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
-            return Optional.of(token.substring(7));
+            return Optional.of(token.substring("Bearer ".length()));
         }
         return Optional.empty();
     }

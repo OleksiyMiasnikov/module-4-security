@@ -62,7 +62,7 @@ public class UserOrderService {
     public List<UserOrder> findByUser(String name) {
         log.info("Looking for all orders by user name: {}", name);
 
-        User user = userRepository.findByName(name).stream().findAny()
+        User user = userRepository.findByName(name)
                 .orElseThrow(() -> new UserOrderNotFoundException(
                         "No order found by user name: " + name
                 ));

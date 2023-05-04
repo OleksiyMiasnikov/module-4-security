@@ -1,6 +1,5 @@
 package com.epam.esm.service;
 
-import com.epam.esm.exception.UserNotFoundException;
 import com.epam.esm.model.entity.User;
 import com.epam.esm.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
@@ -34,11 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        List<User> users = userService.findByName(name);
-        if (users.size() == 0) {
-            throw new UserNotFoundException("Unknown user");
-        }
-        User user = users.get(0);
+        User user = userService.findByName(name);
         return UserPrincipal.builder()
                 .userId(user.getId())
                 .name(user.getName())

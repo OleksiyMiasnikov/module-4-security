@@ -68,7 +68,7 @@ public class AuthenticateService {
     public String issue(Long userId, String name, List<String> roles){
         return JWT.create()
                 .withSubject(String.valueOf(userId))
-                .withExpiresAt(Instant.now().plus(Duration.of(1, ChronoUnit.DAYS)))
+                .withExpiresAt(Instant.now().plus(Duration.of(30, ChronoUnit.MINUTES)))
                 .withClaim("name", name)
                 .withClaim("authorities", roles)
                 .sign(Algorithm.HMAC256(properties.getSecretKey()));

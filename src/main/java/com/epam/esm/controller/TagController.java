@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -22,6 +23,7 @@ public class TagController{
     private final TagMapper mapper;
 
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public TagDTO create(
             @Valid
             @RequestBody CreateTagRequest request) {
@@ -30,12 +32,14 @@ public class TagController{
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
     public Tag findById(@PathVariable("id") Long id) {
         log.info("Locking for tag by id: {}.", id);
         return service.findById(id);
     }
 
     @GetMapping()
+    @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
     public Page<TagDTO> findByName(
             @Valid
             @Param("name") String name,
@@ -46,6 +50,7 @@ public class TagController{
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public boolean delete(@PathVariable("id") Long id) {
         log.info("Deleting tag by id: {}.", id);
         return service.delete(id);
