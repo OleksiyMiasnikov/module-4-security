@@ -2,9 +2,10 @@ package com.epam.esm.security.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.epam.esm.security.jwt.JwtProperties;
+import com.epam.esm.exception.NonAuthenticateUserException;
 import com.epam.esm.model.DTO.login.LoginResponse;
 import com.epam.esm.security.UserPrincipal;
+import com.epam.esm.security.jwt.JwtProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,20 +45,27 @@ public class AuthenticateService {
      */
     public LoginResponse attemptLogin(String name, String password) {
         log.info("Authenticating user.");
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(name, password));
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(name, password));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+            UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
 
-        List<String> roles = principal.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList();
+            List<String> roles = principal.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .toList();
 
-        return LoginResponse.builder()
-                .accessToken(issue(principal.getUserId(), principal.getName(), roles))
-                .build();
+            return LoginResponse.builder()
+                    .accessToken(issue(principal.getUserId(), principal.getName(), roles))
+                    .build();
+        } catch (Exception exception) {
+            log.warn(exception.getMessage());
+            throw new NonAuthenticateUserException(exception.getMessage());
+        }
+
+
     }
 
     /**

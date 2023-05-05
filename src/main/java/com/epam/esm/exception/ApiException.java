@@ -10,9 +10,12 @@ public class ApiException extends RuntimeException{
 
     private ApiErrorResponse apiErrorResponse;
 
-    public ApiException(String message, String errorCode, HttpStatusCode httpStatusCode) {
-        this.apiErrorResponse.setErrorMessage(message);
-        this.apiErrorResponse.setErrorCode(errorCode);
-        this.apiErrorResponse.setStatusCode(httpStatusCode);
+    public ApiException(String message, String errorCode, HttpStatusCode statusCode) {
+        super(message);
+        this.apiErrorResponse = ApiErrorResponse.builder()
+                .errorCode(errorCode)
+                .errorMessage(message)
+                .statusCode(statusCode)
+                .build();
     }
 }

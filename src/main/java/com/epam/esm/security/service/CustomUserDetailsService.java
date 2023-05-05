@@ -35,7 +35,7 @@ public class CustomUserDetailsService implements UserDetailsService {
      * @throws UsernameNotFoundException if user is absent in database
      */
     @Override
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String name) {
         User user = userService.findByName(name);
         log.info("Creating UserPrincipal of authenticated user.");
         return UserPrincipal.builder()

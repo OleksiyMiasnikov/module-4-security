@@ -1,5 +1,6 @@
 package com.epam.esm.exception;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ public class ApiErrorResponse {
 
     private String errorMessage;
     private String errorCode;
+    @JsonIgnore
     private HttpStatusCode statusCode;
 
     public void send(HttpServletResponse response) throws IOException {

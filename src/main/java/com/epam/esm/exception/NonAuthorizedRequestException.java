@@ -1,9 +1,9 @@
 package com.epam.esm.exception;
 
-import org.springframework.http.HttpStatus;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 public class NonAuthorizedRequestException extends ApiException {
     public NonAuthorizedRequestException(String message) {
-        super(message, "40301", HttpStatus.FORBIDDEN);
+        super(message, "40301", FORBIDDEN);
     }
 }
