@@ -8,14 +8,14 @@ import org.springframework.http.HttpStatusCode;
 @Setter
 public class ApiException extends RuntimeException{
 
-    private ApiErrorResponse apiErrorResponse;
+    private String message;
+    private String code;
+    private HttpStatusCode status;
 
-    public ApiException(String message, String errorCode, HttpStatusCode statusCode) {
+    public ApiException(String message, String code, HttpStatusCode status) {
         super(message);
-        this.apiErrorResponse = ApiErrorResponse.builder()
-                .errorCode(errorCode)
-                .errorMessage(message)
-                .statusCode(statusCode)
-                .build();
+        this.code = code;
+        this.message = message;
+        this.status = status;
     }
 }

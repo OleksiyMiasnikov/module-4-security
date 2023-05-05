@@ -71,9 +71,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             } catch (NonAuthorizedRequestException exception) {
 
                 ApiErrorResponse.builder()
-                        .errorMessage(exception.getMessage())
-                        .errorCode(exception.getApiErrorResponse().getErrorCode())
-                        .statusCode(exception.getApiErrorResponse().getStatusCode())
+                        .message(exception.getMessage())
+                        .code(exception.getCode())
+                        .status(exception.getStatus())
                         .build()
                         .send(response);
             }

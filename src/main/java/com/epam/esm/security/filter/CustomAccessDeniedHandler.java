@@ -23,9 +23,9 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
         log.warn("Access denied!");
         ApiErrorResponse.builder()
-                .errorMessage("Access denied!")
-                .errorCode("40311")
-                .statusCode(FORBIDDEN)
+                .message("Access denied!")
+                .code("40311")
+                .status(FORBIDDEN)
                 .build()
                 .send(response);
     }
