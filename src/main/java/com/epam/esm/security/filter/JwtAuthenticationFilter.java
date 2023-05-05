@@ -1,30 +1,26 @@
 package com.epam.esm.security.filter;
 
-import com.epam.esm.exception.ApiException;
+import com.epam.esm.exception.ApiErrorResponse;
 import com.epam.esm.exception.NonAuthorizedRequestException;
+import com.epam.esm.security.UserPrincipalAuthenticationToken;
 import com.epam.esm.security.jwt.JwtDecoder;
 import com.epam.esm.security.jwt.JwtPrincipalConverter;
-import com.epam.esm.security.UserPrincipalAuthenticationToken;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * Class JwtAuthenticationFilter extends {@link OncePerRequestFilter}
@@ -56,29 +52,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (!request.getRequestURI().equals("/login")
                 && !request.getRequestURI().equals("/signup")) {
+            try {
+                Optional<Authentication> authentication =
+                        extractTokenFromRequest(request)
+                            .map(decoder::decode)
+                            .map(converter::convert)
+                            .map(UserPrincipalAuthenticationToken::new);
 
-            var authentication = extractTokenFromRequest(request)
-                    .map(decoder::decode)
-                    .map(converter::convert)
-                    .map(UserPrincipalAuthenticationToken::new);
-            if (authentication.isEmpty()) {
-                // todo
-                log.warn("Authentication fail!");
-                response.setContentType(APPLICATION_JSON_VALUE);
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                Map<String, String> error = new LinkedHashMap<>();
-                error.put("message", "Access denied: non authorized request");
-                error.put("errorCode", "40302");
-                new ObjectMapper().writeValue(response.getOutputStream(), error);
-                throw new NonAuthorizedRequestException("!!!!");
-            } else {
-                log.info("Authentication success.");
-                SecurityContextHolder
-                        .getContext()
-                        .setAuthentication(authentication.get());
+                if (authentication.isEmpty()) {
+                    log.warn("Authentication fail!");
+                    throw new NonAuthorizedRequestException("Authentication needed.");
+                } else {
+                    log.info("Authentication success.");
+                    SecurityContextHolder
+                            .getContext()
+                            .setAuthentication(authentication.get());
+                }
+            } catch (NonAuthorizedRequestException exception) {
+
+                ApiErrorResponse.builder()
+                        .errorMessage(exception.getMessage())
+                        .errorCode(exception.getApiErrorResponse().getErrorCode())
+                        .statusCode(exception.getApiErrorResponse().getStatusCode())
+                        .build()
+                        .send(response);
             }
         }
-
         filterChain.doFilter(request, response);
     }
 

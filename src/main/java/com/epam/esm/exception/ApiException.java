@@ -7,13 +7,12 @@ import org.springframework.http.HttpStatusCode;
 @Getter
 @Setter
 public class ApiException extends RuntimeException{
-    private String message;
-    private String errorCode;
-    private HttpStatusCode httpStatusCode;
+
+    private ApiErrorResponse apiErrorResponse;
 
     public ApiException(String message, String errorCode, HttpStatusCode httpStatusCode) {
-        this.message = message;
-        this.errorCode = errorCode;
-        this.httpStatusCode = httpStatusCode;
+        this.apiErrorResponse.setErrorMessage(message);
+        this.apiErrorResponse.setErrorCode(errorCode);
+        this.apiErrorResponse.setStatusCode(httpStatusCode);
     }
 }

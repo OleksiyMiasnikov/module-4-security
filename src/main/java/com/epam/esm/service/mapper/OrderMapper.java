@@ -1,6 +1,6 @@
 package com.epam.esm.service.mapper;
 
-import com.epam.esm.exception.CertificateNotFoundException;
+import com.epam.esm.exception.ApiEntityNotFoundException;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagDTO;
 import com.epam.esm.model.DTO.user_order.CreateUserOrderRequest;
 import com.epam.esm.model.DTO.user_order.UserOrderDTO;
@@ -32,11 +32,11 @@ public class OrderMapper {
     public UserOrder toOrder(CreateUserOrderRequest request) {
         CertificateWithTag certificateWithTag
                 = certificateWithTagRepository.findById(request.getCertificateWithTagId())
-                          .orElseThrow(() -> new CertificateNotFoundException("Error"));
+                          .orElseThrow(() -> new ApiEntityNotFoundException("Entity is absent"));
 
         Certificate certificate
                 = certificateRepository.findById(certificateWithTag.getCertificateId())
-                .orElseThrow(() -> new CertificateNotFoundException("Error"));
+                .orElseThrow(() -> new ApiEntityNotFoundException("Entity is absent"));
 
         return UserOrder.builder()
                 .userId(request.getUserId())
@@ -51,7 +51,7 @@ public class OrderMapper {
         Optional<CertificateWithTag> certificateWithTagOptional = certificateWithTagRepository.findById(userOrder.getCertificateWithTagId());
 
         if (userOptional.isEmpty() || certificateWithTagOptional.isEmpty()) {
-            throw new CertificateNotFoundException("Error");
+            throw new ApiEntityNotFoundException("Error");
         }
 
         User user = userOptional.get();

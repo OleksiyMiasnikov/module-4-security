@@ -1,6 +1,6 @@
 package com.epam.esm.service;
 
-import com.epam.esm.exception.CertificateNotFoundException;
+import com.epam.esm.exception.ApiEntityNotFoundException;
 import com.epam.esm.model.DTO.certificate.CreateCertificateRequest;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.repository.CertificateRepository;
@@ -55,14 +55,14 @@ public class CertificateService {
      *
      * @param id certificate id
      * @return {@link Certificate} certificate
-     * @throws CertificateNotFoundException if a certificate with a given id doesn't exist
+     * @throws  if a certificate with a given id doesn't exist throws {@link ApiEntityNotFoundException}
      */
     public Certificate findById(Long id) {
         log.info("Locking for certificate by id: {}.", id);
 
         return repo.findById(id)
                 .orElseThrow(() ->
-                        new CertificateNotFoundException(
+                        new ApiEntityNotFoundException(
                                 "Requested certificate is not found (id=" + id + ")"
                         ));
     }

@@ -1,7 +1,6 @@
 package com.epam.esm.service;
 
-import com.epam.esm.exception.UserNotFoundException;
-import com.epam.esm.exception.UserOrderNotFoundException;
+import com.epam.esm.exception.ApiEntityNotFoundException;
 import com.epam.esm.model.DTO.UserWithMaxTotalCostDTO;
 import com.epam.esm.model.DTO.user_order.CreateUserOrderRequest;
 import com.epam.esm.model.entity.Tag;
@@ -63,7 +62,7 @@ public class UserOrderService {
         log.info("Looking for all orders by user name: {}", name);
 
         User user = userRepository.findByName(name)
-                .orElseThrow(() -> new UserOrderNotFoundException(
+                .orElseThrow(() -> new ApiEntityNotFoundException(
                         "No order found by user name: " + name
                 ));
 
@@ -80,9 +79,9 @@ public class UserOrderService {
         Long tagId = repo.findMostlyUsedTag(userId).getTagId();
         Double totalCost = userWithMaxTotalCost.getTotalCost();
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User is not present!"));
+                .orElseThrow(() -> new ApiEntityNotFoundException("User is not present!"));
         Tag tag = tagRepository.findById(tagId)
-                .orElseThrow(() -> new UserNotFoundException("Tag is not present!"));
+                .orElseThrow(() -> new ApiEntityNotFoundException("Tag is not present!"));
 
         return UserWithMaxTotalCostDTO.builder()
                 .user(user.getName())

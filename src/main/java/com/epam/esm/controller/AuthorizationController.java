@@ -5,7 +5,6 @@ import com.epam.esm.model.DTO.login.LoginResponse;
 import com.epam.esm.security.UserPrincipal;
 import com.epam.esm.security.service.AuthenticateService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +30,6 @@ public class AuthorizationController {
     }
 
     @GetMapping("/secured")
- //   @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
     public String secured(@AuthenticationPrincipal UserPrincipal principal) {
         return "This is secured endpoint!\n" +
                 "You are authorized!\n" +
@@ -42,7 +40,6 @@ public class AuthorizationController {
     }
 
     @GetMapping("/admin")
-//    @PreAuthorize("hasRole('ADMIN')")
     public String adminEndpoint(@AuthenticationPrincipal UserPrincipal principal) {
         return "This is secured admin endpoint!\n" +
                 "You are authorized!\n" +

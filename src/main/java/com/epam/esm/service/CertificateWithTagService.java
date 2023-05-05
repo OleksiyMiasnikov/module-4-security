@@ -1,6 +1,6 @@
 package com.epam.esm.service;
 
-import com.epam.esm.exception.CertificateWithTagNotFoundException;
+import com.epam.esm.exception.ApiEntityNotFoundException;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.CertificateWithTag;
@@ -123,13 +123,13 @@ public class CertificateWithTagService{
      *
      * @param id certificate with tag id
      * @return {@link CertificateWithTag} CertificateWithTag
-     * @throws CertificateWithTagNotFoundException if a certificate with tag with a given id doesn't exist
+     * @throws if a certificate with tag with a given id doesn't exist throws {@link ApiEntityNotFoundException}
      */
     public CertificateWithTag findById(Long id) {
         log.info("Locking for certificate with tag by id: {}.", id);
 
         return repo.findById(id)
-                .orElseThrow(() -> new CertificateWithTagNotFoundException(
+                .orElseThrow(() -> new ApiEntityNotFoundException(
                         "Requested certificate with tag is not found (id=" + id + ")"
                         ));
     }

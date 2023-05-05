@@ -1,6 +1,6 @@
 package com.epam.esm.service;
 
-import com.epam.esm.exception.TagNotFoundException;
+import com.epam.esm.exception.ApiEntityNotFoundException;
 import com.epam.esm.model.DTO.tag.CreateTagRequest;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.repository.TagRepository;
@@ -42,12 +42,12 @@ public class TagService {
      *
      * @param id tag id.
      * @return {@link Tag} tag.
-     * @throws TagNotFoundException if a tag with a given id doesn't exist.
+     * @throws {@link ApiEntityNotFoundException} if a tag with a given id doesn't exist.
      */
     public Tag findById(Long id) {
         log.info("Getting tag by id: {}.", id);
         Optional<Tag> result = repo.findById(id);
-        return result.orElseThrow(() -> new TagNotFoundException(
+        return result.orElseThrow(() -> new ApiEntityNotFoundException(
                 "Requested tag is not found (id=" + id + ")"));
     }
 

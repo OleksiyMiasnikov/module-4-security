@@ -1,6 +1,6 @@
 package com.epam.esm.service.mapper;
 
-import com.epam.esm.exception.CertificateNotFoundException;
+import com.epam.esm.exception.ApiEntityNotFoundException;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagDTO;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.CertificateWithTag;
@@ -31,7 +31,7 @@ public class CertificateWithTagMapper {
                 tagRepository.findById(certificateWithTag.getTagId());
 
         if (certificateOptional.isEmpty() || tagOptional.isEmpty()) {
-            throw new CertificateNotFoundException("Error");
+            throw new ApiEntityNotFoundException("Entity is absent");
         }
 
         Certificate certificate = certificateOptional.get();

@@ -1,7 +1,7 @@
 package com.epam.esm.config;
 
 import com.epam.esm.model.entity.Role;
-import com.epam.esm.security.CustomAuthenticationFailureHandler;
+import com.epam.esm.security.filter.CustomAccessDeniedHandler;
 import com.epam.esm.security.service.CustomUserDetailsService;
 import com.epam.esm.security.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +28,16 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfig {
     private final JwtAuthenticationFilter filter;
     private final CustomUserDetailsService customUserDetailsService;
-    private final CustomAuthenticationFailureHandler failureHandler;
+    private final CustomAccessDeniedHandler handler;
 
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         log.info("SecurityFilterChain configuration started.");
+
         http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+        http.exceptionHandling().accessDeniedHandler(handler);
+
         http
             .cors().disable()
             .csrf().disable()

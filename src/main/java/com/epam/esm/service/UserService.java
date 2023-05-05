@@ -1,21 +1,14 @@
 package com.epam.esm.service;
 
-import com.epam.esm.exception.TagNotFoundException;
-import com.epam.esm.exception.UserNotFoundException;
+import com.epam.esm.exception.ApiEntityNotFoundException;
 import com.epam.esm.model.entity.User;
 import com.epam.esm.repository.UserRepository;
-import com.epam.esm.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -32,12 +25,12 @@ public class UserService {
      *
      * @param id user id
      * @return {@link User} user
-     * @throws UserNotFoundException if a user with a given id doesn't exist
+     * @throws {@link ApiEntityNotFoundException} if a user with a given id doesn't exist
      */
     public User findById(Long id) {
         log.info("Locking for user by id: {}.", id);
         Optional<User> result = repo.findById(id);
-        return result.orElseThrow(() -> new UserNotFoundException(
+        return result.orElseThrow(() -> new ApiEntityNotFoundException(
                 "Requested user is not found (id=" + id + ")"));
     }
 
@@ -65,7 +58,7 @@ public class UserService {
 
     public User findByName(String name) {
         log.info("Locking for user by name: {}.", name);
-        return repo.findByName(name).orElseThrow(() -> new TagNotFoundException(
+        return repo.findByName(name).orElseThrow(() -> new ApiEntityNotFoundException(
                 "Requested user is not found (name=" + name + ")"));
     }
 
