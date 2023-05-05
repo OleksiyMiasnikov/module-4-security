@@ -30,7 +30,7 @@ public class CertificateWithTagController{
     private final CertificateWithTagMapper mapper;
 
     @PostMapping()
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public CertificateWithTagDTO create(
             @Valid
             @RequestBody CertificateWithTagRequest request) {
@@ -46,7 +46,7 @@ public class CertificateWithTagController{
     }
 
     @GetMapping()
-    @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
+ //   @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
     public Page<CertificateWithTagDTO> findAll(Pageable pageable) {
         log.info("Getting all certificates with tags");
 
@@ -55,7 +55,7 @@ public class CertificateWithTagController{
     }
 
     @GetMapping("/tag")
-    @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
+//    @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
     public Page<CertificateWithTagDTO> findByTagNames(Pageable pageable,
                                                       @Param("name") String ... name) {
         log.info("Getting all certificates by tag name.");
@@ -64,14 +64,14 @@ public class CertificateWithTagController{
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
+//    @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
     public CertificateWithTagDTO findById(@PathVariable("id") Long id) {
         log.info("Locking for certificate with tag by id: {}.", id);
         return mapper.toDTO(service.findById(id));
     }
 
     @GetMapping("/search")
-    @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
+//    @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
     public List<CertificateWithTagDTO> findByPartOfNameOrDescription(
             @Param("pattern") String pattern) {
         log.info("Locking for certificates by part of name or description");

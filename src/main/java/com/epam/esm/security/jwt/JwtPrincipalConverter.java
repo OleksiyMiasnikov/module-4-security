@@ -3,6 +3,7 @@ package com.epam.esm.security.jwt;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.epam.esm.security.UserPrincipal;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * Converts json web token to object of {@link UserPrincipal}.
  *
  */
+@Slf4j
 @Component
 public class JwtPrincipalConverter {
 
@@ -22,6 +24,7 @@ public class JwtPrincipalConverter {
      * @return created {@link UserPrincipal}
      */
     public UserPrincipal convert(DecodedJWT jwt) {
+        log.info("Creating UserPrincipal from JWT.");
         return UserPrincipal.builder()
                 .userId(Long.parseLong(jwt.getSubject()))
                 .name(jwt.getClaim("name").asString())

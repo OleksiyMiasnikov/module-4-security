@@ -1,9 +1,11 @@
 package com.epam.esm.config;
 
 import com.epam.esm.model.entity.Role;
-import com.epam.esm.service.CustomUserDetailsService;
+import com.epam.esm.security.CustomAuthenticationFailureHandler;
+import com.epam.esm.security.service.CustomUserDetailsService;
 import com.epam.esm.security.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,17 +21,19 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
     private final JwtAuthenticationFilter filter;
-
     private final CustomUserDetailsService customUserDetailsService;
+    private final CustomAuthenticationFailureHandler failureHandler;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        log.info("SecurityFilterChain configuration started.");
         http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
         http
             .cors().disable()
@@ -41,21 +45,14 @@ public class SecurityConfig {
 //                          .requestMatchers("/**").permitAll()
                             .requestMatchers("/login").permitAll()
                             .requestMatchers("/signup").permitAll()
-//                            .requestMatchers(GET, "/**").hasAuthority(Role.GUEST.name())
-//                            .requestMatchers(GET, "/**").hasAuthority(Role.USER.name())
-//                            .requestMatchers(POST, "/**").hasAuthority(Role.USER.name())
-//                            .requestMatchers("/**").hasAuthority(Role.ADMIN.name())
-//
-//                    .requestMatchers("/tags").permitAll()
-//                    .requestMatchers("/certificates").permitAll()
-//                    .requestMatchers("/certificates_with_tags").permitAll()
-//                    .requestMatchers("/users").permitAll()
-//                    .requestMatchers("/orders").permitAll()
-//
-                    .requestMatchers("/users/**").hasAuthority(Role.USER.name())
-                    .requestMatchers("/admin/**").hasAuthority(Role.ADMIN.name())
-
-                    .anyRequest().authenticated()
+                            .requestMatchers("/secured").permitAll()
+                            .requestMatchers(GET, "/**")
+                            .hasAnyAuthority(Role.GUEST.name(), Role.USER.name(), Role.ADMIN.name())
+                            .requestMatchers(POST, "/orders")
+                            .hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+                            .requestMatchers("/**").hasAuthority(Role.ADMIN.name())
+                            .anyRequest()
+                            .authenticated()
                 );
         return http.build();
     }
@@ -67,9 +64,11 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity httpSecurity) throws Exception {
+        log.info("AuthenticationManager configuration started.");
         return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class)
                 .userDetailsService(customUserDetailsService)
                 .passwordEncoder(passwordEncoder())
                 .and().build();
     }
+
 }

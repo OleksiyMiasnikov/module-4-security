@@ -1,8 +1,10 @@
-package com.epam.esm.service;
+package com.epam.esm.security.service;
 
 import com.epam.esm.model.entity.User;
 import com.epam.esm.security.UserPrincipal;
+import com.epam.esm.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +19,7 @@ import java.util.List;
  * and creates {@link UserDetails} with user details.
  *
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
@@ -27,13 +30,14 @@ public class CustomUserDetailsService implements UserDetailsService {
      * Gets user with a given name from database
      * and creates {@link UserDetails} with user details
      *
-     * @param name user name
+     * @param name users name
      * @return {@link UserDetails} with user details
      * @throws UsernameNotFoundException if user is absent in database
      */
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
         User user = userService.findByName(name);
+        log.info("Creating UserPrincipal of authenticated user.");
         return UserPrincipal.builder()
                 .userId(user.getId())
                 .name(user.getName())

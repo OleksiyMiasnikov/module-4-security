@@ -27,7 +27,6 @@ public class UserOrderController {
     private final OrderMapper mapper;
 
     @PostMapping()
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public UserOrderDTO create(
             @Valid
             @RequestBody CreateUserOrderRequest request) {
@@ -36,7 +35,6 @@ public class UserOrderController {
     }
 
     @GetMapping()
-    @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
     public Page<UserOrderDTO> findAll(Pageable pageable) {
         log.info("Getting all orders.");
         Page<UserOrder> page = service.findAll(pageable);
@@ -44,7 +42,6 @@ public class UserOrderController {
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
     public List<UserOrderDTO> findByUser(
             @Valid
             @Param("user") String user) {
@@ -53,7 +50,6 @@ public class UserOrderController {
     }
 
     @GetMapping("/max")
-    @PreAuthorize("hasRole('ADMIN')")
     public UserWithMaxTotalCostDTO findUserWithMaxTotalCost() {
         log.info("Determining the most widely used tag of a user with the highest cost of all orders.");
         return service.findUserWithMaxTotalCost();

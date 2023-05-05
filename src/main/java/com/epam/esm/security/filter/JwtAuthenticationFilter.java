@@ -1,22 +1,30 @@
 package com.epam.esm.security.filter;
 
+import com.epam.esm.exception.ApiException;
+import com.epam.esm.exception.NonAuthorizedRequestException;
 import com.epam.esm.security.jwt.JwtDecoder;
 import com.epam.esm.security.jwt.JwtPrincipalConverter;
 import com.epam.esm.security.UserPrincipalAuthenticationToken;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * Class JwtAuthenticationFilter extends {@link OncePerRequestFilter}
@@ -25,6 +33,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
  * and put it into SecurityContextHolder
  *
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -45,14 +54,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        extractTokenFromRequest(request)
-                .map(decoder::decode)
-                .map(converter::convert)
-                .map(UserPrincipalAuthenticationToken::new)
-                .ifPresent(authentication ->
-                        SecurityContextHolder
-                            .getContext()
-                            .setAuthentication(authentication));
+        if (!request.getRequestURI().equals("/login")
+                && !request.getRequestURI().equals("/signup")) {
+
+            var authentication = extractTokenFromRequest(request)
+                    .map(decoder::decode)
+                    .map(converter::convert)
+                    .map(UserPrincipalAuthenticationToken::new);
+            if (authentication.isEmpty()) {
+                // todo
+                log.warn("Authentication fail!");
+                response.setContentType(APPLICATION_JSON_VALUE);
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                Map<String, String> error = new LinkedHashMap<>();
+                error.put("message", "Access denied: non authorized request");
+                error.put("errorCode", "40302");
+                new ObjectMapper().writeValue(response.getOutputStream(), error);
+                throw new NonAuthorizedRequestException("!!!!");
+            } else {
+                log.info("Authentication success.");
+                SecurityContextHolder
+                        .getContext()
+                        .setAuthentication(authentication.get());
+            }
+        }
 
         filterChain.doFilter(request, response);
     }
@@ -65,10 +90,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * or Optional.empty() if it absents
      */
     private Optional<String> extractTokenFromRequest(HttpServletRequest request) {
-        var token = request.getHeader(AUTHORIZATION);
+        log.info("Getting JWT from request.");
+        String token = request.getHeader(AUTHORIZATION);
         if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
             return Optional.of(token.substring("Bearer ".length()));
         }
+        log.warn("There is no JWT in header.");
         return Optional.empty();
     }
 }

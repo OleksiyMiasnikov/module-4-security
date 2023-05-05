@@ -1,7 +1,9 @@
 package com.epam.esm.controller.advice;
 
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.epam.esm.exception.ModuleErrorResponse;
-import com.epam.esm.exception.ModuleException;
+import com.epam.esm.exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ModuleExceptionHandler {
 
     @ExceptionHandler
-    private ResponseEntity<ModuleErrorResponse> handleException(ModuleException exception){
+    private ResponseEntity<ModuleErrorResponse> handleApiException(ApiException exception){
         log.warn("An exception '{}' was thrown with code '{}'",
                 exception.getMessage(),
                 exception.getErrorCode());
@@ -27,7 +29,7 @@ public class ModuleExceptionHandler {
     }
 
     @ExceptionHandler
-    private ResponseEntity<ModuleErrorResponse> handleException(BindException exception){
+    private ResponseEntity<ModuleErrorResponse> handleBindException(BindException exception){
         log.warn("An exception '{}' was thrown with code '{}'",
                 exception.getMessage(),
                 40001);
@@ -59,5 +61,29 @@ public class ModuleExceptionHandler {
                 exception.getMessage(),
                 "40003"),
                 HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<ModuleErrorResponse> handleException(
+            JWTDecodeException exception){
+        log.warn("An exception '{}' was thrown with code '{}'",
+                exception.getMessage(),
+                40311);
+        return new ResponseEntity<>(new ModuleErrorResponse(
+                exception.getMessage(),
+                "40311"),
+                HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<ModuleErrorResponse> handleTokenExpiredException(
+            TokenExpiredException exception){
+        log.warn("An exception '{}' was thrown with code '{}'",
+                exception.getMessage(),
+                40321);
+        return new ResponseEntity<>(new ModuleErrorResponse(
+                exception.getMessage(),
+                "40321"),
+                HttpStatus.FORBIDDEN);
     }
 }

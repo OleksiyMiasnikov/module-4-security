@@ -1,4 +1,4 @@
-package com.epam.esm.service;
+package com.epam.esm.security.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -6,6 +6,7 @@ import com.epam.esm.security.jwt.JwtProperties;
 import com.epam.esm.model.DTO.login.LoginResponse;
 import com.epam.esm.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,6 +25,7 @@ import java.util.List;
  * and creates a json web token with the authenticated user.
  *
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthenticateService {
@@ -41,6 +43,7 @@ public class AuthenticateService {
      * @return {@link LoginResponse} with created json web token
      */
     public LoginResponse attemptLogin(String name, String password) {
+        log.info("Authenticating user.");
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(name, password));
 
@@ -66,6 +69,7 @@ public class AuthenticateService {
      * @return json web token
      */
     public String issue(Long userId, String name, List<String> roles){
+        log.info("Issuing the new JWT.");
         return JWT.create()
                 .withSubject(String.valueOf(userId))
                 .withExpiresAt(Instant.now().plus(Duration.of(30, ChronoUnit.MINUTES)))

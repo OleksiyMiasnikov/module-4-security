@@ -22,7 +22,7 @@ public class CertificateController{
     private final CertificateService service;
     private final CertificateMapper mapper;
     @PostMapping()
-    @PreAuthorize("hasRole('ADMIN')")
+ //   @PreAuthorize("hasRole('ADMIN')")
     public CertificateDTO create(
             @Valid
             @RequestBody CreateCertificateRequest request) {
@@ -31,7 +31,7 @@ public class CertificateController{
     }
 
     @GetMapping()
-    @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
+//    @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
     public Page<CertificateDTO> findAll(Pageable pageable) {
         log.info("Getting all certificates.");
         Page<Certificate> page = service.findAll(pageable);
@@ -39,14 +39,14 @@ public class CertificateController{
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
+//    @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
     public CertificateDTO findById(@PathVariable("id") Long id) {
         log.info("Locking for certificate with id: {}.", id);
         return mapper.toDTO(service.findById(id));
     }
 
     @PatchMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public CertificateDTO update(@PathVariable("id") Long id,
                               @RequestBody Certificate certificate) {
         log.info("Updating certificate by id: {}.", id);
@@ -54,7 +54,7 @@ public class CertificateController{
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public boolean delete(@PathVariable("id") Long id) {
         log.info("Deleting certificate by id: {}.", id);
         return service.delete(id);

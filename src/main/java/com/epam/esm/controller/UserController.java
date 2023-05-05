@@ -26,21 +26,21 @@ public class UserController {
     private final UserMapper mapper;
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
+ //   @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
     public UserDTO findById(@PathVariable("id") Long id) {
         log.info("Locking for user by id: {}.", id);
         return mapper.toDTO(service.findById(id));
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
+ //   @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
     public UserDTO findByName(@Param("name") String name) {
         log.info("Locking for user by name: {}.", name);
         return mapper.toDTO(service.findByName(name));
     }
 
     @GetMapping()
-    @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
+ //   @PreAuthorize("hasAnyRole('ADMIN','USER', 'GUEST')")
     public Page<UserDTO> findAll(Pageable pageable) {
         log.info("Getting all certificates");
         Page<User> page = service.findAll(pageable);
