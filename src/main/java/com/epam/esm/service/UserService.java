@@ -1,8 +1,10 @@
 package com.epam.esm.service;
 
 import com.epam.esm.exception.ApiEntityNotFoundException;
+import com.epam.esm.model.DTO.user.CreateUserRequest;
 import com.epam.esm.model.entity.User;
 import com.epam.esm.repository.UserRepository;
+import com.epam.esm.service.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,13 +21,15 @@ import java.util.Optional;
 @Slf4j
 public class UserService {
     private final UserRepository repo;
+    private final UserMapper mapper;
 
     /**
      * Finds a {@link User} by its id.
      *
      * @param id user id
      * @return {@link User} user
-     * @throws {@link ApiEntityNotFoundException} if a user with a given id doesn't exist
+     * @throws if a user with a given id doesn't exist
+     *      {@link ApiEntityNotFoundException} will be thrown
      */
     public User findById(Long id) {
         log.info("Locking for user by id: {}.", id);
@@ -47,12 +51,12 @@ public class UserService {
     /**
      * Creates a new user.
      *
-     * @param name - name of user
+     * @param request - create user request
      * @return {@link User} created tag
      */
-    public User create(String name) {
-        log.info("Creating a new user with name: {}.", name);
-        User user = User.builder().name(name).build();
+    public User create(CreateUserRequest request) {
+        log.info("Creating a new user with name: {}.", request.getName());
+        User user = mapper.toUser(request);
         return repo.save(user);
     }
 

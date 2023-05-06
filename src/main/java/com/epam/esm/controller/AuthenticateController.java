@@ -15,18 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
-public class AuthorizationController {
+public class AuthenticateController {
 
     private final AuthenticateService service;
 
     @GetMapping("/login")
     public LoginResponse login(@RequestBody @Validated LoginRequest request){
         return service.attemptLogin(request.getName(), request.getPassword());
-    }
-
-    @GetMapping("/signup")
-    public String signUp(){
-        return "signup";
     }
 
     @GetMapping("/secured")

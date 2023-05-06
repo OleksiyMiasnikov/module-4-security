@@ -60,17 +60,17 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity httpSecurity) throws Exception {
         log.info("AuthenticationManager configuration started.");
         return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class)
                 .userDetailsService(customUserDetailsService)
-                .passwordEncoder(passwordEncoder())
+                .passwordEncoder(new BCryptPasswordEncoder())
                 .and().build();
     }
 

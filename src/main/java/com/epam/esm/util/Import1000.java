@@ -50,7 +50,7 @@ public class Import1000 {
             if (! wordsSet.add(word.toString())) continue;
             count++;
         }
-        wordsSet.forEach(userService::create);
+        //wordsSet.forEach(userService::create);
         System.out.println("Users " + count);
     }
 

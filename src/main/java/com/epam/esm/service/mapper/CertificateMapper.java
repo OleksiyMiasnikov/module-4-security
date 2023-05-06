@@ -12,17 +12,17 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class CertificateMapper {
-    private final ModelMapper certificateModelMapper;
+    private final ModelMapper apiMapper;
 
     public Certificate toCertificate(CertificateWithTagRequest request) {
-        return certificateModelMapper.map(request, Certificate.class);
+        return apiMapper.map(request, Certificate.class);
     }
 
     public Certificate toCertificate(CreateCertificateRequest request) {
-        return certificateModelMapper.map(request,Certificate.class);
+        return apiMapper.map(request,Certificate.class);
     }
 
     public CertificateDTO toDTO(Certificate certificate) {
-        return certificateModelMapper.map(certificate, CertificateDTO.class);
+        return apiMapper.map(certificate, CertificateDTO.class);
     }
 }
