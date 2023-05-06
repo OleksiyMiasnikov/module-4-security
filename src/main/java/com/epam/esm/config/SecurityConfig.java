@@ -45,7 +45,6 @@ public class SecurityConfig {
             .formLogin().disable()
             .securityMatcher("/**")
             .authorizeHttpRequests(registry -> registry
-//                          .requestMatchers("/**").permitAll()
                             .requestMatchers("/login").permitAll()
                             .requestMatchers("/signup").permitAll()
                             .requestMatchers("/secured").permitAll()
@@ -60,17 +59,17 @@ public class SecurityConfig {
         return http.build();
     }
 
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity httpSecurity) throws Exception {
         log.info("AuthenticationManager configuration started.");
         return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class)
                 .userDetailsService(customUserDetailsService)
-                .passwordEncoder(new BCryptPasswordEncoder())
+                .passwordEncoder(passwordEncoder())
                 .and().build();
     }
 

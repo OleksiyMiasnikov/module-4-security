@@ -49,4 +49,7 @@ public class UserController {
         Page<User> page = service.findAll(pageable);
         return page.map(mapper::toDTO);
     }
+
+    // todo
+    // change user role by admin
 }
