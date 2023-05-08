@@ -21,8 +21,6 @@ public class AuthenticateController {
 
     @GetMapping("/login")
     public LoginResponse login(@RequestBody @Validated LoginRequest request){
-        // todo
-        // add refresh token
         return service.attemptLogin(request.getName(), request.getPassword());
     }
 
@@ -36,13 +34,9 @@ public class AuthenticateController {
                 principal.getAuthorities();
     }
 
-    @GetMapping("/refresh_token")
-    public String adminEndpoint(@AuthenticationPrincipal UserPrincipal principal) {
-        //todo
-        //1. verify refresh token
-        //2. get user from token
-        //3. generate new tokens for this user
-        return "refresh token";
+    @GetMapping("/refresh")
+    public LoginResponse refreshTokens() {
+        return service.refreshTokens();
     }
 }
 

@@ -32,7 +32,6 @@ public class CustomUserDetailsService implements UserDetailsService {
      *
      * @param name users name
      * @return {@link UserDetails} with user details
-     * @throws UsernameNotFoundException if user is absent in database
      */
     @Override
     public UserDetails loadUserByUsername(String name) {
