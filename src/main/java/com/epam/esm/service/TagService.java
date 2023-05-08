@@ -52,6 +52,17 @@ public class TagService {
     }
 
     /**
+     * Finds all tags with pageable.
+     * Returns all records if name is empty.
+     *
+     * @return List {@link Tag} List of tags.
+     */
+    public Page<Tag> findAllWithPageable(Pageable pageable) {
+        log.info("Getting all tags.");
+        return repo.findAll(pageable);
+    }
+
+    /**
      * Finds all {@link Tag} by name with pageable.
      * Returns all records if name is empty.
      *
@@ -60,9 +71,7 @@ public class TagService {
      */
     public Page<Tag> findByNameWithPageable(String name, Pageable pageable) {
         log.info("Locking for tag by name: {} with pageable.", name);
-        return (name == null || name.isEmpty())
-                ? repo.findAll(pageable)
-                : repo.findByName(name, pageable);
+        return repo.findByName(name, pageable);
     }
 
     /**

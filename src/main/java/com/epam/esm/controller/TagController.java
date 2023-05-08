@@ -36,6 +36,13 @@ public class TagController{
     }
 
     @GetMapping()
+    public Page<TagDTO> findAll(Pageable pageable) {
+        log.info("Getting all tags.");
+        Page<Tag> page = service.findAllWithPageable(pageable);
+        return page.map(mapper::toDTO);
+    }
+
+    @GetMapping("/tag")
     public Page<TagDTO> findByName(
             @Valid
             @Param("name") String name,
