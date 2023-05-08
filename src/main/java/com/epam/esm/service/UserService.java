@@ -55,7 +55,7 @@ public class UserService {
      * @return {@link User} created tag
      */
     public User create(CreateUserRequest request) {
-        log.info("Creating a new user with name: {}.", request.getName());
+        log.info("Creating a new user with name: {}.", request.getUsername());
         User user = mapper.toUser(request);
         return repo.save(user);
     }

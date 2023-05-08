@@ -1,6 +1,6 @@
 package com.epam.esm.model.DTO.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CreateUserRequest {
-    @NotEmpty(message = "Field 'name' can not be empty!")
-    private String name;
-    @NotEmpty(message = "Field 'name' can not be empty!")
+    @NotEmpty(message = "Field 'username' can not be empty!")
+    private String username;
+    @NotEmpty(message = "Field 'password' can not be empty!")
     private String password;
 }
