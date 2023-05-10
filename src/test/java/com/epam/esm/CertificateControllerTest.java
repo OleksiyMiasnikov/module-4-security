@@ -7,6 +7,8 @@ import com.epam.esm.model.DTO.certificate.CreateCertificateRequest;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.mapper.CertificateMapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +23,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.lang.reflect.Type;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -47,6 +58,7 @@ class CertificateControllerTest {
     private final Certificate certificate1;
     private final Certificate certificate2;
     private final Certificate certificate3;
+    private List<Certificate> certificateList = new ArrayList<>();
 
     {
         certificate1 = Certificate.builder()
@@ -70,6 +82,29 @@ class CertificateControllerTest {
                 .price(150d)
                 .duration(14)
                 .build();
+
+        URL res = getClass().getClassLoader().getResource("list_of_certificates.json");
+        File file = null;
+        try {
+            file = Paths.get(res.toURI()).toFile();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+        String absolutePath = file.getAbsolutePath();
+
+        String filePath = getClass()
+                .getClassLoader()
+                .getResourceAsStream("list_of_certificates.json").toString();
+        Gson gson = new Gson();
+        try (Reader reader = new FileReader(absolutePath)) {
+            Type listType = new TypeToken<ArrayList<Certificate>>(){}.getType();
+            certificateList = gson.fromJson(reader, listType);
+
+            System.out.println(certificateList);
+            System.out.println(certificateList.get(0).getDescription());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     @BeforeEach
     void setUp() {

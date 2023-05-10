@@ -132,8 +132,8 @@ class CertificateWithTagControllerTest {
         when(mapper.toDTO(certificate1)).thenReturn(certificateDto1);
         when(mapper.toDTO(certificate3)).thenReturn(certificateDto3);
 
-        this.mockMvc.perform(get("/certificates_with_tags//search/{pattern}",
-                        "certificate 1"))
+        this.mockMvc.perform(get("/certificates_with_tags/search")
+                        .param("pattern","certificate 1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(expected1)))

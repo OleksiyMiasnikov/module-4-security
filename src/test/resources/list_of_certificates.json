@@ -1,0 +1,38 @@
+[
+	{
+		"id": 1,
+		"name": "cert_1 ABC",
+		"description": "certificate with #1",
+		"price": 100.0,
+		"duration": 7,
+		"createDate": "2023-04-02T14:30:15.000",
+		"lastUpdateDate": "2023-04-02T14:30:15.000"
+	},
+	{
+		"id": 2,
+		"name": "cert_2 DFG",
+		"description": "certificate with #2 ABC",
+		"price": 200.0,
+		"duration": 15,
+		"createDate": "2023-04-03T14:30:15.000",
+		"lastUpdateDate": "2023-04-03T14:30:15.000"
+	},
+	{
+		"id": 3,
+		"name": "cert_3 ZXC",
+		"description": "certificate with #3 QWE",
+		"price": 300.0,
+		"duration": 30,
+		"createDate": "2023-04-04T14:30:15.000",
+		"lastUpdateDate": "2023-04-04T14:30:15.000"
+	},
+	{
+		"id": 4,
+		"name": "cert_4 QWE",
+		"description": "certificate with #4",
+		"price": 400.0,
+		"duration": 45,
+		"createDate": "2023-04-05T14:30:15.000",
+		"lastUpdateDate": "2023-04-05T14:30:15.000"
+	}
+]
