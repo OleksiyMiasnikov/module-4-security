@@ -1,0 +1,3 @@
+certificate:
+  new:
+    json: {"name": "new certificate","description": "description of new certificate","price": 153.45,"duration": 8}

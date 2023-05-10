@@ -3,8 +3,7 @@ package com.epam.esm.model.DTO.certificate;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
