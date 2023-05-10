@@ -83,28 +83,28 @@ class CertificateControllerTest {
                 .duration(14)
                 .build();
 
-        URL res = getClass().getClassLoader().getResource("list_of_certificates.json");
-        File file = null;
-        try {
-            file = Paths.get(res.toURI()).toFile();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-        String absolutePath = file.getAbsolutePath();
-
-        String filePath = getClass()
-                .getClassLoader()
-                .getResourceAsStream("list_of_certificates.json").toString();
-        Gson gson = new Gson();
-        try (Reader reader = new FileReader(absolutePath)) {
-            Type listType = new TypeToken<ArrayList<Certificate>>(){}.getType();
-            certificateList = gson.fromJson(reader, listType);
-
-            System.out.println(certificateList);
-            System.out.println(certificateList.get(0).getDescription());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//        URL res = getClass().getClassLoader().getResource("list_of_certificates.json");
+//        File file = null;
+//        try {
+//            file = Paths.get(res.toURI()).toFile();
+//        } catch (URISyntaxException e) {
+//            throw new RuntimeException(e);
+//        }
+//        String absolutePath = file.getAbsolutePath();
+//
+//        String filePath = getClass()
+//                .getClassLoader()
+//                .getResourceAsStream("list_of_certificates.json").toString();
+//        Gson gson = new Gson();
+//        try (Reader reader = new FileReader(absolutePath)) {
+//            Type listType = new TypeToken<ArrayList<Certificate>>(){}.getType();
+//            certificateList = gson.fromJson(reader, listType);
+//
+//            System.out.println(certificateList);
+//            System.out.println(certificateList.get(0).getDescription());
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
     }
     @BeforeEach
     void setUp() {
