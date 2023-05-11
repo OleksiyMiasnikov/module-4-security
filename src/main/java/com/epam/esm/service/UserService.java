@@ -71,7 +71,25 @@ public class UserService {
     }
 
     @Transactional
-    public User changeRole(Long id, String roleName) {
+    public User changeRoleByUserId(Long id, String roleName) {
+        log.info("Changing role of user with id: {}", id);
+        User user = repo.findById(id)
+                .orElseThrow(() -> new ApiEntityNotFoundException("Requested user is not found (id=" + id + ")."));
+
+        return changeRoleByUser(user, roleName);
+    }
+
+    @Transactional
+    public User changeRoleByUserName(String userName, String roleName) {
+        log.info("Changing role of user: {}", userName);
+        User user = repo.findByName(userName)
+                .orElseThrow(() ->
+                        new ApiEntityNotFoundException("Requested user is not found (name=" + userName + ")."));
+
+        return changeRoleByUser(user, roleName);
+    }
+
+    public User changeRoleByUser(User user, String roleName) {
 
         Role role = Arrays.stream(Role.values())
                 .filter(r -> r.name().equalsIgnoreCase(roleName))
@@ -81,9 +99,6 @@ public class UserService {
         if (role.equals(Role.ADMIN)) {
             throw new NonAuthorizedRequestException("You do not able to set role ADMIN!");
         }
-
-        User user = repo.findById(id)
-                .orElseThrow(() -> new ApiEntityNotFoundException("Requested user is not found (id=" + id + ")."));
 
         user.setRole(role);
         repo.save(user);

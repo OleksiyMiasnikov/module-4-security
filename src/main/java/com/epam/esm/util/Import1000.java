@@ -2,6 +2,7 @@ package com.epam.esm.util;
 
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
 import com.epam.esm.model.DTO.tag.CreateTagRequest;
+import com.epam.esm.model.DTO.user.CreateUserRequest;
 import com.epam.esm.model.DTO.user_order.CreateUserOrderRequest;
 import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.model.entity.Tag;
@@ -32,7 +33,7 @@ public class Import1000 {
         while (input.hasNext() && count < 1000) {
             StringBuilder word  = new StringBuilder(input.next().replaceAll("[^A-Za-z]", ""));
             if (word.length() < 4 || word.length() > 10) continue;
-            if (! wordsSet.add(word.toString())) continue;
+            if (! wordsSet.add(word.toString().toUpperCase())) continue;
             count++;
         }
         wordsSet.forEach(w -> tagService.create(CreateTagRequest.builder().name(w).build()));
@@ -47,10 +48,13 @@ public class Import1000 {
         while (input.hasNext() && count < 1000) {
             StringBuilder word  = new StringBuilder(input.next().replaceAll("[^A-Za-z]", ""));
             if (word.length() < 4 || word.length() > 10) continue;
-            if (! wordsSet.add(word.toString())) continue;
+            if (! wordsSet.add(word.toString().toUpperCase())) continue;
             count++;
         }
-        //wordsSet.forEach(userService::create);
+        wordsSet.forEach(w -> userService.create(CreateUserRequest.builder()
+                        .password("111")
+                        .username(w)
+                        .build()));
         System.out.println("Users " + count);
     }
 

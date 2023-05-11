@@ -51,8 +51,14 @@ public class UserController {
     }
 
     @PatchMapping("/users/{id}/role")
-    public UserDTO changeRole(@PathVariable("id") Long id, @Param("role") String role) {
+    public UserDTO changeRoleByUserId(@PathVariable("id") Long id, @Param("role") String role) {
         log.info("Changing role of user with id: {}", id);
-        return mapper.toDTO(service.changeRole(id, role));
+        return mapper.toDTO(service.changeRoleByUserId(id, role));
+    }
+
+    @PatchMapping("/users/user/role")
+    public UserDTO changeRoleByUserName(@Param("user") String user, @Param("role") String role) {
+        log.info("Changing role of user: {}", user);
+        return mapper.toDTO(service.changeRoleByUserName(user, role));
     }
 }
