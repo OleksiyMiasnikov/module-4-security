@@ -25,10 +25,10 @@ public class UserController {
 
     @GetMapping("/signup")
     public UserDTO signUp(
-        @Valid
-        @RequestBody CreateUserRequest request) {
-            log.info("Creating tag with name: {}.", request.getUsername());
-            return mapper.toDTO(service.create(request));
+            @Valid
+            @RequestBody CreateUserRequest request) {
+        log.info("Creating tag with name: {}.", request.getUsername());
+        return mapper.toDTO(service.create(request));
     }
 
     @GetMapping("/users/{id}")
@@ -50,6 +50,9 @@ public class UserController {
         return page.map(mapper::toDTO);
     }
 
-    // todo
-    // change user role by admin
+    @PatchMapping("/users/{id}/role")
+    public UserDTO changeRole(@PathVariable("id") Long id, @Param("role") String role) {
+        log.info("Changing role of user with id: {}", id);
+        return mapper.toDTO(service.changeRole(id, role));
+    }
 }

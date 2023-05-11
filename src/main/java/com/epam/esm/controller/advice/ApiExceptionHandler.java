@@ -11,6 +11,8 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.Objects;
+
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Slf4j
@@ -32,7 +34,7 @@ public class ApiExceptionHandler {
     private ResponseEntity<ApiErrorResponse> handleBindException(BindException exception){
         ApiErrorResponse apiErrorResponse = ApiErrorResponse.builder()
                 .code("40001")
-                .message(exception.getMessage())
+                .message(Objects.requireNonNull(exception.getFieldError()).getDefaultMessage())
                 .status(BAD_REQUEST)
                 .build();
 
