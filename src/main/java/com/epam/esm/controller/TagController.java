@@ -30,9 +30,9 @@ public class TagController{
     }
 
     @GetMapping("/{id}")
-    public Tag findById(@PathVariable("id") Long id) {
+    public TagDTO findById(@PathVariable("id") Long id) {
         log.info("Locking for tag by id: {}.", id);
-        return service.findById(id);
+        return mapper.toDTO(service.findById(id));
     }
 
     @GetMapping()

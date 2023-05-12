@@ -1,4 +1,4 @@
-package com.epam.esm;
+package com.epam.esm.controller;
 
 import com.epam.esm.controller.CertificateWithTagController;
 import com.epam.esm.controller.advice.ApiExceptionHandler;

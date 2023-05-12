@@ -1,4 +1,4 @@
-package com.epam.esm;
+package com.epam.esm.controller;
 
 import com.epam.esm.controller.CertificateController;
 import com.epam.esm.controller.advice.ApiExceptionHandler;
@@ -9,7 +9,6 @@ import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.mapper.CertificateMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +33,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
