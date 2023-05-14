@@ -116,11 +116,16 @@ public class AuthenticateService {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
-        return LoginResponse.builder()
-                .accessToken(issueAccessToken(principal.getUserId(), principal.getName(), roles))
-                .refreshToken(issueRefreshToken(principal.getUserId()))
-                .build();
+        String newAccessToken = issueAccessToken(principal.getUserId(), principal.getName(), roles);
+        String newRefreshToken = issueRefreshToken(principal.getUserId());
 
+        storage.replace(principal.getUserId(), newRefreshToken);
+        log.info("Refresh token added. Key: {}, value: {}.", principal.getUserId(), refreshToken);
+
+        return LoginResponse.builder()
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshToken)
+                .build();
     }
 
     /**
