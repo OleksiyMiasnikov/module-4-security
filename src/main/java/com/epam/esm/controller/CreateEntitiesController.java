@@ -21,7 +21,7 @@ public class CreateEntitiesController {
             import1000.parseFileWithTags();
             import1000.createCertificatesWithTags();
         } catch (Exception exception) {
-            throw new ApiEntityNotFoundException("Something went wrong!!!");
+            throw new ApiEntityNotFoundException("Something went wrong!!! " + exception.getLocalizedMessage());
         }
         return new ResponseEntity<>("Done!", HttpStatus.OK);
     }

@@ -103,10 +103,8 @@ class TagControllerTest {
 
     @Test
     void findByNameTest() throws Exception{
-        Page<Tag> page = new PageImpl<>(new LinkedList<>(List.of(tag2)));
-        Pageable pageable = Pageable.ofSize(3).withPage(0);
 
-        when(service.findByNameWithPageable("first tag", pageable)).thenReturn(page);
+        when(service.findByName("first tag")).thenReturn(tag2);
         when(mapper.toDTO(tag2)).thenReturn(tagDto2);
 
         this.mockMvc.perform(get("/tags/tag")
@@ -115,10 +113,10 @@ class TagControllerTest {
                         .param("size", "3"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(1)))
-                .andExpect(jsonPath("$.content[0]").value(tag2));
+                .andExpect(jsonPath("$.id").value(tag2.getId()))
+                .andExpect(jsonPath("$.name").value(tag2.getName()));
 
-        verify(service).findByNameWithPageable("first tag", pageable);
+        verify(service).findByName("first tag");
         verify(mapper).toDTO(tag2);
     }
 

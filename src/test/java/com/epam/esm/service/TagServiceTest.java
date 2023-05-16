@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -60,10 +63,13 @@ class TagServiceTest {
                 .id(++id)
                 .name("tag2")
                 .build();
-        when(repo.findAll()).thenReturn(List.of(tag2, tag, tag2));
-        List<Tag> result = subject.findByName("");
-        assertThat(result.size()).isEqualTo(3);
-        assertThat(result).isEqualTo(List.of(tag2, tag, tag2));
+        when(repo.findAll(Pageable.ofSize(10).withPage(0)))
+                .thenReturn(new PageImpl<Tag>(List.of(tag2, tag, tag2)));
+
+        Page<Tag> result = subject.findAllWithPageable(Pageable.ofSize(10).withPage(0));
+
+        assertThat(result.stream().count()).isEqualTo(3);
+        assertThat(result).isEqualTo(new PageImpl<Tag>(List.of(tag2, tag, tag2)));
     }
 
     @Test
@@ -76,9 +82,8 @@ class TagServiceTest {
     @Test
     void findByName() {
         when(repo.findByName(name)).thenReturn(List.of(tag));
-        List<Tag> result = subject.findByName(name);
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result).isEqualTo(List.of(tag));
+        Tag result = subject.findByName(name);
+        assertThat(result).isEqualTo(tag);
     }
 
     @Test
