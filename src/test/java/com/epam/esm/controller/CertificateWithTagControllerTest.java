@@ -1,6 +1,5 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.controller.CertificateWithTagController;
 import com.epam.esm.controller.advice.ApiExceptionHandler;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagDTO;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;

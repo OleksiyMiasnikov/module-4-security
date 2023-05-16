@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
@@ -83,6 +84,23 @@ class AuthenticateControllerTest {
     }
 
     @Test
-    void refreshTokens() {
+    void refreshTokens() throws Exception {
+        String authorization = "Bearer ~refresh token~";
+        LoginResponse response = LoginResponse.builder()
+                .accessToken("- access token -")
+                .refreshToken("- refresh token -")
+                .build();
+
+        when(service.refreshTokens(authorization)).thenReturn(response);
+
+        this.mockMvc.perform(get("/refresh")
+                        .header(HttpHeaders.AUTHORIZATION,
+                                authorization))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(header().stringValues("access_token", "- access token -"))
+                .andExpect(header().stringValues("refresh_token", "- refresh token -"));
+
+        verify(service).refreshTokens(authorization);
     }
 }

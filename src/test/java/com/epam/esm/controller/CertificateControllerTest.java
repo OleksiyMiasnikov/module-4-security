@@ -1,6 +1,5 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.controller.CertificateController;
 import com.epam.esm.controller.advice.ApiExceptionHandler;
 import com.epam.esm.model.DTO.certificate.CertificateDTO;
 import com.epam.esm.model.DTO.certificate.CreateCertificateRequest;
