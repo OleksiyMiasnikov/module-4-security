@@ -37,25 +37,27 @@ class AuthenticateControllerTest {
     @InjectMocks
     AuthenticateController subject;
 
+    private LoginResponse response;
+
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(subject)
                 .setControllerAdvice(new ApiExceptionHandler())
                 .build();
+        response = LoginResponse.builder()
+                .accessToken("- access token -")
+                .refreshToken("- refresh token -")
+                .build();
     }
 
     @Test
     void login() throws Exception {
+        String jsonLogin = "{\"name\": \"user\",\"password\": \"111\"}";
+
         LoginRequest request = LoginRequest.builder()
                 .name("user")
                 .password("111")
                 .build();
-        LoginResponse response = LoginResponse.builder()
-                .accessToken("- access token -")
-                .refreshToken("- refresh token -")
-                .build();
-
-        String jsonLogin = "{\"name\": \"user\",\"password\": \"111\"}";
 
         when(service.attemptLogin(request.getName(), request.getPassword())).thenReturn(response);
 
@@ -72,6 +74,7 @@ class AuthenticateControllerTest {
 
     @Test
     void secured() throws Exception {
+        // todo
         this.mockMvc.perform(get("/secured")
                         .with(SecurityMockMvcRequestPostProcessors
                                 .user(UserPrincipal.builder()
@@ -86,10 +89,6 @@ class AuthenticateControllerTest {
     @Test
     void refreshTokens() throws Exception {
         String authorization = "Bearer ~refresh token~";
-        LoginResponse response = LoginResponse.builder()
-                .accessToken("- access token -")
-                .refreshToken("- refresh token -")
-                .build();
 
         when(service.refreshTokens(authorization)).thenReturn(response);
 

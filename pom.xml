@@ -88,6 +88,13 @@
 			<artifactId>javax.json</artifactId>
 			<version>1.1.4</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/uk.co.jemos.podam/podam -->
+		<dependency>
+			<groupId>uk.co.jemos.podam</groupId>
+			<artifactId>podam</artifactId>
+			<version>7.2.11.RELEASE</version>
+			<scope>test</scope>
+		</dependency>
 
 
 
