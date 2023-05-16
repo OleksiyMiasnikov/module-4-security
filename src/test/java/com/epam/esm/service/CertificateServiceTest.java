@@ -101,7 +101,7 @@ class CertificateServiceTest {
 
         assertThatThrownBy(() -> subject.findById(wrongId))
                 .isInstanceOf(ApiEntityNotFoundException.class)
-                .hasMessageContaining("Requested certificate is not found (id=" + wrongId + ")");
+                .hasMessageContaining("Requested certificate was not found (id=" + wrongId + ")");
     }
 
     @Test

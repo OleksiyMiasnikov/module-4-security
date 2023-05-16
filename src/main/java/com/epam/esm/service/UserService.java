@@ -39,7 +39,7 @@ public class UserService {
         log.info("Locking for user by id: {}.", id);
         Optional<User> result = repo.findById(id);
         return result.orElseThrow(() -> new ApiEntityNotFoundException(
-                "Requested user is not found (id=" + id + ")"));
+                "Requested user was not found (id=" + id + ")"));
     }
 
     /**
@@ -75,7 +75,7 @@ public class UserService {
     public User findByName(String name) {
         log.info("Locking for user by name: {}.", name);
         return repo.findByName(name).orElseThrow(() -> new ApiEntityNotFoundException(
-                "Requested user is not found (name=" + name + ")"));
+                "Requested user was not found (name=" + name + ")"));
     }
 
      /**
@@ -94,7 +94,7 @@ public class UserService {
 
         User user = repo.findById(id)
                 .orElseThrow(() ->
-                        new ApiEntityNotFoundException("Requested user is not found (id=" + id + ")."));
+                        new ApiEntityNotFoundException("Requested user was not found (id=" + id + ")."));
 
         if (request.getRole().equals(Role.ADMIN)) {
             throw new NonAuthorizedRequestException("You do not able to set role ADMIN!");

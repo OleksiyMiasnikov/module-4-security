@@ -1,5 +1,6 @@
 package com.epam.esm.service;
 
+import com.epam.esm.exception.ApiEntityCouldNotBeDeletedException;
 import com.epam.esm.exception.ApiEntityNotFoundException;
 import com.epam.esm.model.DTO.certificate.CreateCertificateRequest;
 import com.epam.esm.model.entity.Certificate;
@@ -63,7 +64,7 @@ public class CertificateService {
         return repo.findById(id)
                 .orElseThrow(() ->
                         new ApiEntityNotFoundException(
-                                "Requested certificate is not found (id=" + id + ")"
+                                "Requested certificate was not found (id=" + id + ")"
                         ));
     }
 
@@ -108,7 +109,11 @@ public class CertificateService {
         log.info("Deleting certificate by id: {}.", id);
         Optional<Certificate> deletedCertificate = repo.findById(id);
         if (deletedCertificate.isPresent()) {
-            repo.delete(deletedCertificate.get());
+            try {
+                repo.delete(deletedCertificate.get());
+            } catch (Exception exception) {
+                throw new ApiEntityCouldNotBeDeletedException("Cannot delete a parent row: a foreign key constraint fails");
+            }
             return true;
         } else {
             return false;

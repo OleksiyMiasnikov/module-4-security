@@ -43,13 +43,9 @@ public class TagController{
     }
 
     @GetMapping("/tag")
-    public Page<TagDTO> findByName(
-            @Valid
-            @Param("name") String name,
-            Pageable pageable) {
+    public TagDTO findByName(@Valid @Param("name") String name) {
         log.info("Locking for tag by name: {}.", name);
-        Page<Tag> page = service.findByNameWithPageable(name, pageable);
-        return page.map(mapper::toDTO);
+        return mapper.toDTO(service.findByName(name));
     }
 
     @DeleteMapping("/{id}")

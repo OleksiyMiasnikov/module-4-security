@@ -130,7 +130,7 @@ public class CertificateWithTagService{
 
         return repo.findById(id)
                 .orElseThrow(() -> new ApiEntityNotFoundException(
-                        "Requested certificate with tag is not found (id=" + id + ")"
+                        "Requested certificate with tag was not found (id=" + id + ")"
                         ));
     }
 }

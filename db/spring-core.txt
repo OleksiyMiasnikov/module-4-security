@@ -1583,7 +1583,7 @@ The session scope implementation, for example, returns the session-scoped bean (
 JavaKotlin
 Object get(String name, ObjectFactory<?> objectFactory)
 
-The session scope implementation, for example, removes the session-scoped bean from the underlying session. The object should be returned, but you can return null if the object with the specified name is not found. The following method removes the object from the underlying scope:
+The session scope implementation, for example, removes the session-scoped bean from the underlying session. The object should be returned, but you can return null if the object with the specified name was not found. The following method removes the object from the underlying scope:
 
 JavaKotlin
 Object remove(String name)
@@ -5895,7 +5895,7 @@ Editor for byte arrays. Converts strings to their corresponding byte representat
 
 ClassEditor
 
-Parses Strings that represent classes to actual classes and vice-versa. When a class is not found, an IllegalArgumentException is thrown. By default, registered by BeanWrapperImpl.
+Parses Strings that represent classes to actual classes and vice-versa. When a class was not found, an IllegalArgumentException is thrown. By default, registered by BeanWrapperImpl.
 
 CustomBooleanEditor
 

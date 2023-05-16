@@ -59,7 +59,8 @@ public class Import1000 {
     }
 
     public void createCertificatesWithTags() {
-        List<Tag> tags = tagService.findByName("");
+        Pageable pageable = Pageable.ofSize(2000).withPage(0);
+        List<Tag> tags = tagService.findAllWithPageable(pageable).toList();
         List<User> users = userService.findAll(Pageable.ofSize(10000).withPage(0)).toList();
         System.out.println("Tags - " + tags.size());
         System.out.println("Users - " + users.size());

@@ -48,7 +48,7 @@ public class TagService {
         log.info("Getting tag by id: {}.", id);
         Optional<Tag> result = repo.findById(id);
         return result.orElseThrow(() -> new ApiEntityNotFoundException(
-                "Requested tag is not found (id=" + id + ")"));
+                "Requested tag was not found (id=" + id + ")"));
     }
 
     /**
@@ -69,23 +69,13 @@ public class TagService {
      * @param name tag name.
      * @return List {@link Tag} List of tags.
      */
-    public Page<Tag> findByNameWithPageable(String name, Pageable pageable) {
+    public Tag findByName(String name) {
         log.info("Locking for tag by name: {} with pageable.", name);
-        return repo.findByName(name, pageable);
-    }
-
-    /**
-     * Finds all {@link Tag} by name.
-     * Returns all records if name is empty.
-     *
-     * @param name tag name.
-     * @return List {@link Tag} List of tags.
-     */
-    public List<Tag> findByName(String name) {
-        log.info("Locking for tag by name: {}.", name);
-        return (name == null || name.isEmpty())
-                ? repo.findAll()
-                : repo.findByName(name);
+        List<Tag> tags = repo.findByName(name);
+        if (tags.size() == 0) {
+            throw new ApiEntityNotFoundException("Requested tag was not found (name = " + name + ")");
+        }
+        return tags.get(0);
     }
 
     /**
