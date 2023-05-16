@@ -40,8 +40,13 @@ public class AuthenticateController {
     }
 
     @GetMapping("/refresh")
-    public LoginResponse refreshTokens(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
-        return service.refreshTokens(authorization);
+    public ResponseEntity<LoginResponse> refreshTokens(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
+        LoginResponse loginResponse = service.refreshTokens(authorization);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("access_token", loginResponse.getAccessToken());
+        headers.add("refresh_token", loginResponse.getRefreshToken());
+
+        return new ResponseEntity<>(loginResponse, headers, HttpStatus.OK);
     }
 }
 

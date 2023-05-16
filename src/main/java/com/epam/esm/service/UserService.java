@@ -2,6 +2,7 @@ package com.epam.esm.service;
 
 import com.epam.esm.exception.ApiEntityNotFoundException;
 import com.epam.esm.exception.NonAuthorizedRequestException;
+import com.epam.esm.model.DTO.user.ChangeRoleRequest;
 import com.epam.esm.model.DTO.user.CreateUserRequest;
 import com.epam.esm.model.entity.Role;
 import com.epam.esm.model.entity.User;
@@ -14,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -59,48 +59,48 @@ public class UserService {
      * @return {@link User} created tag
      */
     public User create(CreateUserRequest request) {
-        log.info("Creating a new user with name: {}.", request.getUsername());
+        log.info("Creating a new user with name: {}.", request.getName());
         User user = mapper.toUser(request);
         return repo.save(user);
     }
 
+    /**
+     * Finds a {@link User} by its name.
+     *
+     * @param name user name
+     * @return {@link User} user
+     * @throws if a user with a given name doesn't exist
+     *      {@link ApiEntityNotFoundException} will be thrown
+     */
     public User findByName(String name) {
         log.info("Locking for user by name: {}.", name);
         return repo.findByName(name).orElseThrow(() -> new ApiEntityNotFoundException(
                 "Requested user is not found (name=" + name + ")"));
     }
 
+     /**
+     * Changes role of user with a given id.
+     *
+     * @param id - user id
+     * @param request - new role
+     * @return modified {@link User} user
+     * @throws if a user with a given name doesn't exist
+     *            {@link ApiEntityNotFoundException} will be thrown
+     *            or {@link NonAuthorizedRequestException} in case attempt to set role 'ADMIN'.
+     */
     @Transactional
-    public User changeRoleByUserId(Long id, String roleName) {
-        log.info("Changing role of user with id: {}", id);
+    public User changeRoleByUserId(Long id, ChangeRoleRequest request) {
+        log.info("Changing role of user by id: {}", id);
+
         User user = repo.findById(id)
-                .orElseThrow(() -> new ApiEntityNotFoundException("Requested user is not found (id=" + id + ")."));
-
-        return changeRoleByUser(user, roleName);
-    }
-
-    @Transactional
-    public User changeRoleByUserName(String userName, String roleName) {
-        log.info("Changing role of user: {}", userName);
-        User user = repo.findByName(userName)
                 .orElseThrow(() ->
-                        new ApiEntityNotFoundException("Requested user is not found (name=" + userName + ")."));
+                        new ApiEntityNotFoundException("Requested user is not found (id=" + id + ")."));
 
-        return changeRoleByUser(user, roleName);
-    }
-
-    public User changeRoleByUser(User user, String roleName) {
-
-        Role role = Arrays.stream(Role.values())
-                .filter(r -> r.name().equalsIgnoreCase(roleName))
-                .findFirst()
-                .orElseThrow(() -> new ApiEntityNotFoundException("Incorrect parameter 'role'!"));
-
-        if (role.equals(Role.ADMIN)) {
+        if (request.getRole().equals(Role.ADMIN)) {
             throw new NonAuthorizedRequestException("You do not able to set role ADMIN!");
         }
 
-        user.setRole(role);
+        user.setRole(request.getRole());
         repo.save(user);
         return user;
     }

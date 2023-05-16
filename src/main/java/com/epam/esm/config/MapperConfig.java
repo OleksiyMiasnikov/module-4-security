@@ -63,7 +63,7 @@ public class MapperConfig {
 
         TypeMap<CreateUserRequest, User> propertyCreateUserRequestToUser =
                 mapper.createTypeMap(CreateUserRequest.class, User.class);
-        propertyCreateUserRequestToUser.addMapping(CreateUserRequest::getUsername, User::setName);
+        propertyCreateUserRequestToUser.addMapping(CreateUserRequest::getName, User::setName);
         propertyCreateUserRequestToUser.addMappings(
                 m -> m.map((CreateUserRequest) -> Role.GUEST,
                         User::setRole));

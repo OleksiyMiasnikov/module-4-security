@@ -3,7 +3,6 @@ package com.epam.esm.controller;
 import com.epam.esm.model.DTO.certificate.CertificateDTO;
 import com.epam.esm.model.DTO.certificate.CreateCertificateRequest;
 import com.epam.esm.model.entity.Certificate;
-import com.epam.esm.security.RefreshTokenStorage;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.mapper.CertificateMapper;
 import jakarta.validation.Valid;
@@ -21,6 +20,7 @@ public class CertificateController{
 
     private final CertificateService service;
     private final CertificateMapper mapper;
+
     @PostMapping()
     public CertificateDTO create(
             @Valid

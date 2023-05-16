@@ -1,5 +1,7 @@
 package com.epam.esm.model.DTO.user;
 
+import com.epam.esm.model.entity.Role;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,9 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateUserRequest {
-    @NotEmpty(message = "Field 'name' can not be empty!")
-    private String name;
-    @NotEmpty(message = "Field 'password' can not be empty!")
-    private String password;
+public class ChangeRoleRequest {
+    @NotEmpty(message = "Field 'role' can not be empty!")
+    @Enumerated
+    private Role role;
 }
