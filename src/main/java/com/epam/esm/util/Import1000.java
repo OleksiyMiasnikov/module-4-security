@@ -53,7 +53,7 @@ public class Import1000 {
         }
         wordsSet.forEach(w -> userService.create(CreateUserRequest.builder()
                         .password("111")
-                        .username(w)
+                        .name(w)
                         .build()));
         System.out.println("Users " + count);
     }

@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.model.DTO.user.ChangeRoleRequest;
 import com.epam.esm.model.DTO.user.CreateUserRequest;
 import com.epam.esm.model.DTO.user.UserDTO;
 import com.epam.esm.model.entity.User;
@@ -20,15 +21,21 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService service;
-
     private final UserMapper mapper;
 
     @GetMapping("/signup")
     public UserDTO signUp(
             @Valid
             @RequestBody CreateUserRequest request) {
-        log.info("Creating tag with name: {}.", request.getUsername());
+        log.info("Creating tag with name: {}.", request.getName());
         return mapper.toDTO(service.create(request));
+    }
+
+    @GetMapping("/users")
+    public Page<UserDTO> findAll(Pageable pageable) {
+        log.info("Getting all certificates");
+        Page<User> page = service.findAll(pageable);
+        return page.map(mapper::toDTO);
     }
 
     @GetMapping("/users/{id}")
@@ -43,22 +50,10 @@ public class UserController {
         return mapper.toDTO(service.findByName(name));
     }
 
-    @GetMapping("/users")
-    public Page<UserDTO> findAll(Pageable pageable) {
-        log.info("Getting all certificates");
-        Page<User> page = service.findAll(pageable);
-        return page.map(mapper::toDTO);
-    }
-
     @PatchMapping("/users/{id}/role")
-    public UserDTO changeRoleByUserId(@PathVariable("id") Long id, @Param("role") String role) {
+    public UserDTO changeRoleByUserId(@PathVariable("id") Long id, @RequestBody ChangeRoleRequest request) {
         log.info("Changing role of user with id: {}", id);
-        return mapper.toDTO(service.changeRoleByUserId(id, role));
+        return mapper.toDTO(service.changeRoleByUserId(id, request));
     }
 
-    @PatchMapping("/users/user/role")
-    public UserDTO changeRoleByUserName(@Param("user") String user, @Param("role") String role) {
-        log.info("Changing role of user: {}", user);
-        return mapper.toDTO(service.changeRoleByUserName(user, role));
-    }
 }
