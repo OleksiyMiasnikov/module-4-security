@@ -107,7 +107,7 @@ public class CertificateWithTagService{
      * @param pattern part of name/description
      * @return List of {@link CertificateWithTag} List of all appropriate certificates with tags
      */
-    public List<CertificateWithTag> findByPartOfNameOrDescription(String pattern) {
+    public Page<CertificateWithTag> findByPartOfNameOrDescription(String pattern, Pageable pageable) {
         log.info("Getting certificates by part of name or description.");
 
         Set<Certificate> set = new HashSet<>(certificateRepo.findByNameContaining(pattern));
@@ -115,7 +115,7 @@ public class CertificateWithTagService{
 
         List<Long> listOfCertificateId = new ArrayList<>(set.stream().map(Certificate::getId).toList());
 
-        return repo.findByCertificateId(listOfCertificateId);
+        return repo.findByCertificateId(listOfCertificateId, pageable);
     }
 
     /**

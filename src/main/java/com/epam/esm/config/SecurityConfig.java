@@ -2,8 +2,8 @@ package com.epam.esm.config;
 
 import com.epam.esm.model.entity.Role;
 import com.epam.esm.security.filter.CustomAccessDeniedHandler;
-import com.epam.esm.security.service.CustomUserDetailsService;
 import com.epam.esm.security.filter.JwtAuthenticationFilter;
+import com.epam.esm.security.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

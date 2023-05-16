@@ -12,12 +12,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
@@ -33,15 +35,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CertificateWithTagControllerTest {
 
     private MockMvc mockMvc;
-
     @Mock
     CertificateWithTagService service;
     @Mock
     CertificateWithTagMapper mapper;
-
     @InjectMocks
     CertificateWithTagController subject;
-
+    private final Pageable pageable = Pageable.ofSize(3).withPage(0);
     private final CertificateWithTag certificate1;
     private final CertificateWithTag certificate3;
 
@@ -101,7 +101,7 @@ class CertificateWithTagControllerTest {
 
     @Test
     void findByPartOfNameOrDescription() throws Exception {
-        List<CertificateWithTag> list = new LinkedList<>(List.of(certificate1, certificate3));
+        Page<CertificateWithTag> page = new PageImpl<>(List.of(certificate1, certificate3));
         String expected1 = "\"tag\":\"tag_1\"," +
                 "\"name\":\"certificate 1\"," +
                 "\"description\":\"description of certificate 1\"," +
@@ -127,17 +127,19 @@ class CertificateWithTagControllerTest {
                 .duration(14)
                 .build();
 
-        when(service.findByPartOfNameOrDescription("certificate 1")).thenReturn(list);
+        when(service.findByPartOfNameOrDescription("certificate 1", pageable)).thenReturn(page);
         when(mapper.toDTO(certificate1)).thenReturn(certificateDto1);
         when(mapper.toDTO(certificate3)).thenReturn(certificateDto3);
 
         this.mockMvc.perform(get("/certificates_with_tags/search")
+                        .param("page", "0")
+                        .param("size", "3")
                         .param("pattern","certificate 1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(expected1)))
                 .andExpect(content().string(containsString(expected2)));
 
-        verify(service).findByPartOfNameOrDescription("certificate 1");
+        verify(service).findByPartOfNameOrDescription("certificate 1", pageable);
     }
 }

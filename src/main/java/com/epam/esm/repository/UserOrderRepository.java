@@ -3,16 +3,16 @@ package com.epam.esm.repository;
 import com.epam.esm.model.entity.MostlyUsedTagIdByUserId;
 import com.epam.esm.model.entity.UserOrder;
 import com.epam.esm.model.entity.UserWithMaxTotalCost;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface UserOrderRepository extends JpaRepository<UserOrder, Long> {
 
-    List<UserOrder> findByUserId(Long id);
+    Page<UserOrder> findByUserId(Long id, Pageable pageable);
 
     @Query("""
            select

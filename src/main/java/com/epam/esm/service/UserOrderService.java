@@ -18,8 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 /**
  *  A service to work with {@link UserOrder}.
  */
@@ -58,7 +56,7 @@ public class UserOrderService {
         return repo.findAll(pageable);
     }
 
-    public List<UserOrder> findByUser(String name) {
+    public Page<UserOrder> findByUser(String name, Pageable pageable) {
         log.info("Looking for all orders by user name: {}", name);
 
         User user = userRepository.findByName(name)
@@ -66,7 +64,7 @@ public class UserOrderService {
                         "No order found by user name: " + name
                 ));
 
-        return repo.findByUserId(user.getId());
+        return repo.findByUserId(user.getId(), pageable);
     }
 
     public UserWithMaxTotalCostDTO findUserWithMaxTotalCost(){

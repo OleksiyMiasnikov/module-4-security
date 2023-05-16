@@ -15,7 +15,7 @@ import java.util.List;
 public interface CertificateWithTagRepository extends JpaRepository<CertificateWithTag, Long> {
 
     @Query("FROM CertificateWithTag c WHERE c.certificateId in :ids" )
-    List<CertificateWithTag> findByCertificateId(@Param("ids") List<Long> listOfCertificateId);
+    Page<CertificateWithTag> findByCertificateId(@Param("ids") List<Long> listOfCertificateId, Pageable pageable);
 
     @Query("FROM CertificateWithTag c WHERE c.tagId in :ids" )
     Page<CertificateWithTag> findByTagIds(@Param("ids") List<Long> tagIds, Pageable pageable);

@@ -14,7 +14,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -66,9 +65,10 @@ public class CertificateWithTagController{
     }
 
     @GetMapping("/search")
-    public List<CertificateWithTagDTO> findByPartOfNameOrDescription(
-            @Param("pattern") String pattern) {
+    public Page<CertificateWithTagDTO> findByPartOfNameOrDescription(
+            Pageable pageable, @Param("pattern") String pattern) {
         log.info("Locking for certificates by part of name or description");
-        return service.findByPartOfNameOrDescription(pattern).stream().map(mapper::toDTO).toList();
+        Page<CertificateWithTag> page = service.findByPartOfNameOrDescription(pattern, pageable);
+        return page.map(mapper::toDTO);
     }
 }
