@@ -1,5 +1,6 @@
 package com.epam.esm.service;
 
+import com.epam.esm.exception.ApiEntityNotFoundException;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.CertificateWithTag;
@@ -19,8 +20,10 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -37,8 +40,12 @@ class CertificateWithTagServiceTest {
     @Mock
     CertificateMapper certificateMapper;
 
-    CertificateWithTag certificateWithTag;
-    CertificateWithTagRequest request;
+    private CertificateWithTag certificateWithTag;
+    private CertificateWithTagRequest request;
+    private Certificate certificate;
+    private Tag tag;
+    private Pageable pageable;
+    private Page<CertificateWithTag> page;
 
     @BeforeEach
     void setUp() {
@@ -57,22 +64,24 @@ class CertificateWithTagServiceTest {
                 .price(100.50)
                 .duration(7)
                 .build();
-    }
-
-    @Test
-    void create() {
-        Tag tag = Tag.builder()
-                .id(1L)
-                .name("tag_name")
-                .build();
-        Certificate certificate = Certificate.builder()
+        certificate = Certificate.builder()
                 .id(1L)
                 .name("certificate 1")
                 .description("description of certificate 1")
                 .price(100.50)
                 .duration(7)
                 .build();
+        tag = Tag.builder()
+                .id(1L)
+                .name("tag_name")
+                .build();
+        pageable = Pageable.ofSize(3).withPage(0);
+        page = new PageImpl<>(List.of(certificateWithTag));
 
+    }
+
+    @Test
+    void create() {
         when(tagRepo.findByName(request.getTag())).thenReturn(List.of(tag));
         when(certificateRepo.save(any(Certificate.class))).thenReturn(certificate);
         when(repo.save(certificateWithTag)).thenReturn(certificateWithTag);
@@ -92,13 +101,7 @@ class CertificateWithTagServiceTest {
                 .id(tagId)
                 .name("new tag")
                 .build();
-        Certificate certificate = Certificate.builder()
-                .id(1L)
-                .name("certificate 1")
-                .description("description of certificate 1")
-                .price(100.50)
-                .duration(7)
-                .build();
+
         certificateWithTag.setTagId(tag.getId());
 
         when(tagRepo.findByName(request.getTag())).thenReturn(new ArrayList<>());
@@ -128,29 +131,54 @@ class CertificateWithTagServiceTest {
 
     @Test
     void findByTagName() {
-        Tag tag1 = Tag.builder()
-                .id(2L)
-                .name("tag")
-                .build();
         Tag tag2 = Tag.builder()
                 .id(4L)
                 .name("tag 4")
                 .build();
-        Pageable pageable = Pageable.ofSize(3).withPage(0);
-        Page<CertificateWithTag> page = new PageImpl<>(List.of(certificateWithTag));
 
-        when(tagRepo.findByName(tag1.getName())).thenReturn(List.of(tag1));
+        when(tagRepo.findByName(tag.getName())).thenReturn(List.of(tag));
         when(tagRepo.findByName(tag2.getName())).thenReturn(List.of(tag2));
-        when(repo.findByTagIds(List.of(tag1.getId(), tag2.getId()), pageable))
+        when(repo.findByTagIds(List.of(tag.getId(), tag2.getId()), pageable))
                 .thenReturn(page);
 
         List<CertificateWithTag> result = subject
-                .findByTagNames(pageable, List.of(tag1.getName(), tag2.getName())).stream().toList();
+                .findByTagNames(pageable, List.of(tag.getName(), tag2.getName())).stream().toList();
 
         assertThat(result).isEqualTo(List.of(certificateWithTag));
 
         verify(tagRepo, times(2)).findByName(any());
-        verify(repo).findByTagIds(List.of(tag1.getId(), tag2.getId()), pageable);
+        verify(repo).findByTagIds(List.of(tag.getId(), tag2.getId()), pageable);
     }
 
+    @Test
+    void findById() {
+        when(repo.findById(1L)).thenReturn(Optional.of(certificateWithTag));
+        CertificateWithTag result = subject.findById(1L);
+        assertThat(result).isEqualTo(certificateWithTag);
+    }
+
+    @Test
+    void findByIdThrowException() {
+        when(repo.findById(10L)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> subject.findById(10L))
+                .isInstanceOf(ApiEntityNotFoundException.class)
+                .hasMessageContaining("Requested certificate with tag was not found (id=10)");
+    }
+
+    @Test
+    void findByPartOfNameOrDescription() {
+        String pattern = "pattern";
+
+        when(certificateRepo.findByNameContaining(pattern)).thenReturn(List.of(certificate));
+        when(certificateRepo.findByDescriptionContaining(pattern)).thenReturn(List.of(certificate));
+        when(repo.findByCertificateId(List.of(certificate.getId()), pageable)).thenReturn(page);
+
+        assertThat(subject.findByPartOfNameOrDescription(pattern, pageable))
+                .isEqualTo(page);
+
+        verify(certificateRepo).findByNameContaining(pattern);
+        verify(certificateRepo).findByDescriptionContaining(pattern);
+        verify(repo).findByCertificateId(List.of(certificate.getId()), pageable);
+
+    }
 }

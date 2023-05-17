@@ -30,7 +30,7 @@ INSERT INTO `user` (`id`, `name`, `password`, `role`)
 VALUES
 (1, 'user_1', '$2a$12$nMzx6PbJJ3MCtis0srPthOwJlCmh7dbq/GyffrC52SmGi43tawQ22', 'GUEST'),
 (2, 'user_2', '$2a$12$2is1.wOlnR6XHXfgsO/jPu4RyUzSn7WWZ0BK/Y0Ca4NNMcD0RzLhy', 'USER'),
-(3, 'user_3', '$2a$12$EugPpe4EBCne9NS6cpEisuwV6DBjE.9gKZXZQQbE3oKDKPCDy.rLO', 'ADMIN');
+(3, 'Admin', '$2a$12$EugPpe4EBCne9NS6cpEisuwV6DBjE.9gKZXZQQbE3oKDKPCDy.rLO', 'ADMIN');
 
 INSERT INTO `user_order` (`id`, `cost`, `create_date`, `user_id`, `certificate_with_tag_id`)
 VALUES

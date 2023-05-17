@@ -1,6 +1,9 @@
 package com.epam.esm.model.DTO.certificate_with_tag;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
 @Getter

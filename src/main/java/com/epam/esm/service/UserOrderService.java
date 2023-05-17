@@ -29,8 +29,8 @@ public class UserOrderService {
 
     private final UserOrderRepository repo;
     private final UserRepository userRepository;
-    private final OrderMapper orderMapper;
     private final TagRepository tagRepository;
+    private final OrderMapper orderMapper;
 
     /**
      * Creates new record of order.

@@ -1,5 +1,6 @@
 package com.epam.esm.service;
 
+import com.epam.esm.exception.ApiEntityNotFoundException;
 import com.epam.esm.model.DTO.tag.CreateTagRequest;
 import com.epam.esm.model.entity.Tag;
 import com.epam.esm.repository.TagRepository;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,12 +66,12 @@ class TagServiceTest {
                 .name("tag2")
                 .build();
         when(repo.findAll(Pageable.ofSize(10).withPage(0)))
-                .thenReturn(new PageImpl<Tag>(List.of(tag2, tag, tag2)));
+                .thenReturn(new PageImpl<>(List.of(tag2, tag, tag2)));
 
         Page<Tag> result = subject.findAllWithPageable(Pageable.ofSize(10).withPage(0));
 
         assertThat(result.stream().count()).isEqualTo(3);
-        assertThat(result).isEqualTo(new PageImpl<Tag>(List.of(tag2, tag, tag2)));
+        assertThat(result).isEqualTo(new PageImpl<>(List.of(tag2, tag, tag2)));
     }
 
     @Test
@@ -84,6 +86,15 @@ class TagServiceTest {
         when(repo.findByName(name)).thenReturn(List.of(tag));
         Tag result = subject.findByName(name);
         assertThat(result).isEqualTo(tag);
+    }
+
+    @Test
+    void findByNameThrowException() {
+        when(repo.findByName(name)).thenReturn(List.of());
+
+        assertThatThrownBy(() -> subject.findByName(name))
+                .isInstanceOf(ApiEntityNotFoundException.class)
+                .hasMessageContaining("Requested tag was not found (name = " + name + ")");
     }
 
     @Test
