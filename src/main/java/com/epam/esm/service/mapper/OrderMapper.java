@@ -48,10 +48,11 @@ public class OrderMapper {
 
     public UserOrderDTO toDTO(UserOrder userOrder) {
         Optional<User> userOptional = userRepository.findById(userOrder.getUserId());
-        Optional<CertificateWithTag> certificateWithTagOptional = certificateWithTagRepository.findById(userOrder.getCertificateWithTagId());
+        Optional<CertificateWithTag> certificateWithTagOptional =
+                certificateWithTagRepository.findById(userOrder.getCertificateWithTagId());
 
         if (userOptional.isEmpty() || certificateWithTagOptional.isEmpty()) {
-            throw new ApiEntityNotFoundException("Error");
+            throw new ApiEntityNotFoundException("Entity is absent");
         }
 
         User user = userOptional.get();

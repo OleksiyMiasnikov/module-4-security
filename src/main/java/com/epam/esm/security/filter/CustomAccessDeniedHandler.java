@@ -1,7 +1,6 @@
 package com.epam.esm.security.filter;
 
 import com.epam.esm.exception.ApiErrorResponse;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +18,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request,
                        HttpServletResponse response,
-                       AccessDeniedException exception) throws IOException, ServletException {
+                       AccessDeniedException exception) throws IOException {
 
         log.warn("Access denied!");
         ApiErrorResponse.builder()

@@ -14,10 +14,8 @@ public class CreateTagRequestConverter extends SimpleArgumentConverter {
 
         assertEquals(CreateTagRequest.class, targetType, "It will only convert to CreateTagRequest");
 
-        CreateTagRequest createTagRequest = CreateTagRequest.builder()
+        return CreateTagRequest.builder()
                 .name(((JsonObject) object).getString("name"))
                 .build();
-
-        return createTagRequest;
     }
 }
