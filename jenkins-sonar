@@ -16,6 +16,17 @@ pipeline {
             }
         }
 
+        stage('Code coverage') {
+                	steps {
+                	    echo 'Testing JaCoCo ..'
+                        step([$class: 'JacocoPublisher',
+                              execPattern: '**/**.exec',
+                              classPattern: '**/classes',
+                              sourcePattern: '**/src/main/java',
+                              exclusionPattern: '**/src/test*'
+                            ])
+                	}
+                }
 
         stage('Build') {
             steps {
