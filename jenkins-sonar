@@ -1,0 +1,13 @@
+pipeline {
+    agent any
+
+    stages {
+		stage('scan') {
+            steps {
+                echo 'SonarCube scanning ...'
+				withSonarQubeEnv(installationName: 'SonarCube')
+				sh './mvnw clean org.sonarsource.scanner.maven:sonar-maven-plagin:3.9.0.2155:sonar'
+            }
+        }
+    }
+}
