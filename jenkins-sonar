@@ -2,12 +2,23 @@ pipeline {
     agent any
 
     stages {
-		stage('scan') {
+        stage('Pool') {
             steps {
-                echo 'SonarCube scanning ...'
-				withSonarQubeEnv(installationName: 'sq1')
-				sh './mvnw clean org.sonarsource.scanner.maven:sonar-maven-plagin:3.9.0.2155:sonar'
+                echo 'Pooling..'
+				git 'https://github.com/OleksiyMiasnikov/module-4-security.git'
+            }
+        }
+        
+		stage('Scan') {
+            steps {
+                echo 'SonarCube scanning 1 ...'
+				withSonarQubeEnv(installationName: 'sq1'){
+				    echo 'SonarCube scanning 2 ...'
+				    //bat './mvnw clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar'
+				    bat './mvnw clean package sonar:sonar'
+				}
             }
         }
     }
 }
+

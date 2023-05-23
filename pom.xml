@@ -11,7 +11,7 @@
 	<groupId>com.epam.esm</groupId>
 	<artifactId>module-4-security</artifactId>
 	<version>0.1</version>
-	<packaging>war</packaging>
+<!--	<packaging>war</packaging> -->
 	<name>module-4-security</name>
 	<description>Module 4. Authentication &amp; Spring Security</description>
 	<properties>
