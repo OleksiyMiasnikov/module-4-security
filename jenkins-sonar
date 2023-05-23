@@ -9,6 +9,14 @@ pipeline {
             }
         }
         
+
+        stage('Build') {
+            steps {
+                echo 'Building..'
+				bat "./mvnw -Dmaven.test.failure.ignore=true clean package"
+            }
+        }
+
 		stage('Scan') {
             steps {
                 echo 'SonarCube scanning 1 ...'
@@ -21,4 +29,3 @@ pipeline {
         }
     }
 }
-
