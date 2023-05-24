@@ -9,8 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.epam.esm</groupId>
-	<artifactId>module-4-security</artifactId>
-	<version>0.1</version>
+	<artifactId>module</artifactId>
 	<packaging>war</packaging>
 <!--	<packaging>war</packaging> -->
 	<name>module-4-security</name>
