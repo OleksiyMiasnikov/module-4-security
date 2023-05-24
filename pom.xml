@@ -11,7 +11,6 @@
 	<groupId>com.epam.esm</groupId>
 	<artifactId>module</artifactId>
 	<packaging>war</packaging>
-<!--	<packaging>war</packaging> -->
 	<name>module-4-security</name>
 	<description>Module 4. Authentication &amp; Spring Security</description>
 	<properties>
@@ -115,19 +114,10 @@
 			<version>0.8.10</version>
 		</dependency>
 
-
-
-
-		<!--		<dependency>-->
-<!--			<groupId>org.springframework.security.oauth</groupId>-->
-<!--			<artifactId>spring-security-oauth2</artifactId>-->
-<!--			<version>2.5.2.RELEASE</version>-->
-<!--		</dependency>-->
-
-
 	</dependencies>
 
 	<build>
+		<finalName>${artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
