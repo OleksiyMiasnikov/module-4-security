@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Pool') {
+            steps {
+                echo 'Pooling ...'
+				git 'https://github.com/OleksiyMiasnikov/module-4-security.git'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Testing ...'
+				bat "./mvnw test"
+            }
+        }
+
+        stage('Code coverage') {
+                	steps {
+                	    echo 'Testing JaCoCo ..'
+                        step([$class: 'JacocoPublisher',
+                              execPattern: '**/**.exec',
+                              classPattern: '**/classes',
+                              sourcePattern: '**/src/main/java',
+                              exclusionPattern: '**/src/test*'
+                            ])
+                	}
+                }
+
+        stage('Build') {
+            steps {
+                echo 'Building ...'
+				bat "./mvnw -Dmaven.test.failure.ignore=true clean package"
+            }
+        }
+
+		stage('Scan') {
+            steps {
+                echo 'SonarCube scanning ...'
+				withSonarQubeEnv(installationName: 'sq1'){
+				    //bat './mvnw clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar'
+				    bat './mvnw clean package sonar:sonar'
+				}
+            }
+        }
+    }
+}
