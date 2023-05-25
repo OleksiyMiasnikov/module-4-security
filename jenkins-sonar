@@ -2,12 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage('Pool') {
-            steps {
-                echo 'Pooling ...'
-				git 'https://github.com/OleksiyMiasnikov/module-4-security.git'
-            }
-        }
 
         stage('Test') {
             steps {
