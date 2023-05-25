@@ -12,6 +12,9 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
         format-sql: true
+server:
+  servlet:
+    context-path: /module
 security:
   jwt:
     secret-key: bETTERl@TEtHE@NnEVER~
