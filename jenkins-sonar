@@ -38,10 +38,18 @@ pipeline {
 				}
             }
         }
-         stage ('Archive Artifacts'){
+        stage ('Deploy'){
             steps {
-                archiveArtifacts artifacts: 'target/*.war'
+                deploy adapters: [tomcat9(credentialsId: '2c81719d-8d36-4c41-95fe-5b5676f37a74',
+                                        path: '', url: 'http://localhost:8080/')],
+                        contextPath: 'module',
+                        war: '**/*.war'
             }
-         }
+        }
+     //   stage ('Archive Artifacts'){
+      //      steps {
+      //          archiveArtifacts artifacts: 'target/*.war'
+      //      }
+      //  }
     }
 }
