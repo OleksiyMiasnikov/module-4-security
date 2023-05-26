@@ -6,8 +6,6 @@ import com.epam.esm.model.DTO.certificate.CreateCertificateRequest;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.mapper.CertificateMapper;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,12 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,26 +43,9 @@ class CertificateControllerTest {
     @InjectMocks
     CertificateController subject;
 
-    private List<CertificateDTO> certificateDTOList = new ArrayList<>();
+    private final List<CertificateDTO> certificateDTOList = new ArrayList<>();
     private List<Certificate> certificateList = new ArrayList<>();
-    private final String expectedFindAll;
-
-
-    {
-        String path = "src/test/resources/list_of_certificateDTOs.json";
-        Gson gson = new Gson();
-        try (Reader reader = new FileReader(path)) {
-            Type listType = new TypeToken<ArrayList<CertificateDTO>>(){}.getType();
-            certificateDTOList = gson.fromJson(reader, listType);
-            expectedFindAll = Files.readString(Paths.get("src/test/resources/expected_certificates.txt"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        certificateList = certificateDTOList.stream()
-                .map(dto -> new ModelMapper().map(dto, Certificate.class))
-                .toList();
-    }
-
+    private String expectedFindAll;
 
     @BeforeEach
     void init() {
@@ -78,6 +53,45 @@ class CertificateControllerTest {
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
                 .setControllerAdvice(new ApiExceptionHandler())
                 .build();
+
+        certificateDTOList.add(CertificateDTO.builder()
+                .id(1L)
+                .name("cert_1 ABC")
+                .description("certificate with #1")
+                .price(100.0)
+                .duration(7)
+                .createDate("2023-04-02T14:30:15.000")
+                .lastUpdateDate("2023-04-02T14:30:15.000")
+                .build());
+        certificateDTOList.add(CertificateDTO.builder()
+                .id(2L)
+                .name("cert_2 DFG")
+                .description("certificate with #2 ABC")
+                .price(200.0)
+                .duration(15)
+                .createDate("2023-04-03T14:30:15.000")
+                .lastUpdateDate("2023-04-03T14:30:15.000")
+                .build());
+
+        expectedFindAll = "[{\"id\":1," +
+                "\"name\":\"cert_1 ABC\"," +
+                "\"description\":\"certificate with #1\"," +
+                "\"price\":100.0," +
+                "\"duration\":7," +
+                "\"createDate\":\"2023-04-02T14:30:15.000\"," +
+                "\"lastUpdateDate\":\"2023-04-02T14:30:15.000\"," +
+                "\"links\":[]}," +
+                "{\"id\":2," +
+                "\"name\":\"cert_2 DFG\"," +
+                "\"description\":\"certificate with #2 ABC\"," +
+                "\"price\":200.0," +
+                "\"duration\":15," +
+                "\"createDate\":\"2023-04-03T14:30:15.000\"," +
+                "\"lastUpdateDate\":\"2023-04-03T14:30:15.000\"," +
+                "\"links\":[]}]";
+        certificateList = certificateDTOList.stream()
+                .map(dto -> new ModelMapper().map(dto, Certificate.class))
+                .toList();
     }
 
     @Test
@@ -89,8 +103,6 @@ class CertificateControllerTest {
         when(service.findAll(pageable)).thenReturn(page);
         when(mapper.toDTO(certificateList.get(0))).thenReturn(certificateDTOList.get(0));
         when(mapper.toDTO(certificateList.get(1))).thenReturn(certificateDTOList.get(1));
-        when(mapper.toDTO(certificateList.get(2))).thenReturn(certificateDTOList.get(2));
-        when(mapper.toDTO(certificateList.get(3))).thenReturn(certificateDTOList.get(3));
 
         this.mockMvc.perform(get("/certificates")
                         .param("page", "0")
