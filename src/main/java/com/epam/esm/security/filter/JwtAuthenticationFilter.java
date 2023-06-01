@@ -61,7 +61,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             .map(UserPrincipalAuthenticationToken::new);
 
                 if (authentication.isEmpty()) {
-                    log.warn("Authentication fail!");
+                    log.warn("Authentication fail for {}", request.getRequestURI());
                     throw new NonAuthorizedRequestException("Authentication needed.");
                 } else {
                     log.info("Authentication success.");

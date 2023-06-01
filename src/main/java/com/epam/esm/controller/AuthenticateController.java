@@ -12,21 +12,25 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
+@CrossOrigin(origins = {"http://localhost:4200"})
 public class AuthenticateController {
 
     private final AuthenticateService service;
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody @Validated LoginRequest request){
         LoginResponse loginResponse = service.attemptLogin(request.getName(), request.getPassword());
         HttpHeaders headers = new HttpHeaders();
+        headers.setAccessControlExposeHeaders(List.of("access_token", "refresh_token"));
         headers.add("access_token", loginResponse.getAccessToken());
         headers.add("refresh_token", loginResponse.getRefreshToken());
 
-        return new ResponseEntity<>(loginResponse, headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @GetMapping("/secured")
