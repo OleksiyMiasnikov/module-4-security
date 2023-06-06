@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -32,6 +33,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+//@CrossOrigin(origins = {"http://localhost:4200/"})
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtDecoder decoder;
     private final JwtPrincipalConverter converter;
@@ -50,6 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
+        log.info("--{}", request.getHeader("authorization"));
         if (!request.getRequestURI().equals("/login")
                 && !request.getRequestURI().equals("/signup")
                 && !request.getRequestURI().equals("/about")) {

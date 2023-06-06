@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/tags")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:4200"})
+//@CrossOrigin(origins = {"http://localhost:4200/"})
 public class TagController{
     private final TagService service;
     private final TagMapper mapper;

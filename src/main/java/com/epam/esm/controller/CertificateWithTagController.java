@@ -22,6 +22,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping("/certificates_with_tags")
 @RequiredArgsConstructor
+//@CrossOrigin(origins = {"http://localhost:4200"})
 public class CertificateWithTagController{
 
     private final CertificateWithTagService service;
