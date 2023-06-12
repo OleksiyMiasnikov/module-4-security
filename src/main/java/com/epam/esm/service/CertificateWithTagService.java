@@ -1,6 +1,7 @@
 package com.epam.esm.service;
 
 import com.epam.esm.exception.ApiEntityNotFoundException;
+import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithListOfTagsDTO;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.CertificateWithTag;
@@ -9,6 +10,7 @@ import com.epam.esm.repository.CertificateRepository;
 import com.epam.esm.repository.CertificateWithTagRepository;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.mapper.CertificateMapper;
+import com.epam.esm.service.mapper.CertificateWithListOfTagsMapper;
 import com.epam.esm.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,7 @@ public class CertificateWithTagService{
     private final TagRepository tagRepo;
     private final CertificateRepository certificateRepo;
     private final CertificateMapper certificateMapper;
+    private final CertificateWithListOfTagsMapper mapper;
 
     /**
      * Creates new record of certificate with tag.
@@ -83,6 +86,24 @@ public class CertificateWithTagService{
         return repo.findAll(pageable);
     }
 
+    /**
+     * Gets all certificates with list of tags by page.
+     * Result will be selected by page and size.
+     *
+     * @param pageable page parameters
+     * @return List of {@link CertificateWithTag} List of all certificates with tags from database
+     */
+    public Page<CertificateWithListOfTagsDTO> getAll(Pageable pageable) {
+        log.info("Getting all certificates with list of tags.");
+        Page<CertificateWithListOfTagsDTO> result =
+                certificateRepo.findAll(pageable).map(mapper::toDTO);
+        for (CertificateWithListOfTagsDTO element: result.getContent()) {
+            List<Long> tagsIds = repo.findByCertificateId(element.getId());
+            List<String> tagsNames = tagRepo.findByIds(tagsIds);
+            element.setTags(tagsNames);
+        }
+        return result;
+    }
 
     /**
      * Finds all certificates by tags name.
@@ -115,7 +136,7 @@ public class CertificateWithTagService{
 
         List<Long> listOfCertificateId = new ArrayList<>(set.stream().map(Certificate::getId).toList());
 
-        return repo.findByCertificateId(listOfCertificateId, pageable);
+        return repo.findByCertificateIds(listOfCertificateId, pageable);
     }
 
     /**

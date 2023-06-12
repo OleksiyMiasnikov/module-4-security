@@ -9,6 +9,7 @@ import com.epam.esm.repository.CertificateRepository;
 import com.epam.esm.repository.CertificateWithTagRepository;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.mapper.CertificateMapper;
+import com.epam.esm.service.mapper.CertificateWithListOfTagsMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,6 +39,8 @@ class CertificateWithTagServiceTest {
     @Mock
     CertificateWithTagService subject;
     @Mock
+    CertificateWithListOfTagsMapper mapper;
+    @Mock
     CertificateMapper certificateMapper;
 
     private CertificateWithTag certificateWithTag;
@@ -52,7 +55,8 @@ class CertificateWithTagServiceTest {
         subject = new CertificateWithTagService(repo,
                 tagRepo,
                 certificateRepo,
-                certificateMapper);
+                certificateMapper,
+                mapper);
         certificateWithTag = CertificateWithTag.builder()
                 .tagId(1L)
                 .certificateId(1L)
@@ -171,14 +175,14 @@ class CertificateWithTagServiceTest {
 
         when(certificateRepo.findByNameContaining(pattern)).thenReturn(List.of(certificate));
         when(certificateRepo.findByDescriptionContaining(pattern)).thenReturn(List.of(certificate));
-        when(repo.findByCertificateId(List.of(certificate.getId()), pageable)).thenReturn(page);
+        when(repo.findByCertificateIds(List.of(certificate.getId()), pageable)).thenReturn(page);
 
         assertThat(subject.findByPartOfNameOrDescription(pattern, pageable))
                 .isEqualTo(page);
 
         verify(certificateRepo).findByNameContaining(pattern);
         verify(certificateRepo).findByDescriptionContaining(pattern);
-        verify(repo).findByCertificateId(List.of(certificate.getId()), pageable);
+        verify(repo).findByCertificateIds(List.of(certificate.getId()), pageable);
 
     }
 }

@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithListOfTagsDTO;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagDTO;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
 import com.epam.esm.model.entity.CertificateWithTag;
@@ -43,10 +44,16 @@ public class CertificateWithTagController{
         return createdDTO;
     }
 
+//    @GetMapping()
+//    public Page<CertificateWithTagDTO> findAll(Pageable pageable) {
+//        log.info("Getting all certificates with tags");
+//        return service.findAll(pageable).map(mapper::toDTO);
+//    }
+
     @GetMapping()
-    public Page<CertificateWithTagDTO> findAll(Pageable pageable) {
+    public Page<CertificateWithListOfTagsDTO> findAll(Pageable pageable) {
         log.info("Getting all certificates with tags");
-        return service.findAll(pageable).map(mapper::toDTO);
+        return service.getAll(pageable);
     }
 
     @GetMapping("/tag")
