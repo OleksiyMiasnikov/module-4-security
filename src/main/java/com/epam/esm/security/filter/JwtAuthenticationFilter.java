@@ -15,7 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -76,7 +75,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 ApiErrorResponse.builder()
                         .message(exception.getMessage())
-                        .code(exception.getCode())
+                        .errorCode(exception.getErrorCode())
                         .status(exception.getStatus())
                         .build()
                         .send(response);

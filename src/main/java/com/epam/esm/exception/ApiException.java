@@ -9,12 +9,12 @@ import org.springframework.http.HttpStatusCode;
 public class ApiException extends RuntimeException{
 
     private String message;
-    private String code;
+    private String errorCode;
     private HttpStatusCode status;
 
-    public ApiException(String message, String code, HttpStatusCode status) {
+    public ApiException(String message, String errorCode, HttpStatusCode status) {
         super(message);
-        this.code = code;
+        this.errorCode = errorCode;
         this.message = message;
         this.status = status;
     }

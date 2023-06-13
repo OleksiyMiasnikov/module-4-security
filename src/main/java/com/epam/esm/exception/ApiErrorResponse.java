@@ -20,7 +20,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class ApiErrorResponse {
 
     private String message;
-    private String code;
+    private String errorCode;
     @JsonIgnore
     private HttpStatusCode status;
 
@@ -31,7 +31,7 @@ public class ApiErrorResponse {
 
         Map<String, String> error = new LinkedHashMap<>();
         error.put("message", this.message);
-        error.put("errorCode", this.code);
+        error.put("errorCode", this.errorCode);
 
         new ObjectMapper().writeValue(response.getOutputStream(), error);
     }

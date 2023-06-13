@@ -86,7 +86,7 @@ public class Import1000 {
             Tag tag = tags.get(random.nextInt(tags.size()));
             String certificateName = "Certificate #" + count;
             CertificateWithTagRequest request = CertificateWithTagRequest.builder()
-                    .tag(tag.getName())
+                    .tags(tag.getName())
                     .name(certificateName)
                     .description(certificateName + " with tag:" + tag.getName() + " description")
                     .price(random.nextInt(100000)/100.0)

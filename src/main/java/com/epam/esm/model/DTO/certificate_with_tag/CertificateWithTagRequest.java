@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CertificateWithTagRequest {
     @NotEmpty(message = "Field 'tag' can not be empty!")
-    private String tag;
+    private String tags;
     @NotEmpty(message = "Field 'name' can not be empty!")
     private String name;
     @NotEmpty(message = "Field 'description' can not be empty!")

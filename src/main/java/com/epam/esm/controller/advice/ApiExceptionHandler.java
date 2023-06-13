@@ -22,9 +22,9 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler
     private ResponseEntity<ApiErrorResponse> handleApiException(ApiException exception){
-        log.warn("An exception '{}' was thrown with code '{}'",
+        log.warn("An exception '{}' was thrown with errorCode '{}'",
                 exception.getMessage(),
-                exception.getCode());
+                exception.getErrorCode());
 
         return new ResponseEntity<>(mapper.map(exception, ApiErrorResponse.class),
                 exception.getStatus());
@@ -33,14 +33,14 @@ public class ApiExceptionHandler {
     @ExceptionHandler
     private ResponseEntity<ApiErrorResponse> handleBindException(BindException exception){
         ApiErrorResponse apiErrorResponse = ApiErrorResponse.builder()
-                .code("40001")
+                .errorCode("40001")
                 .message(Objects.requireNonNull(exception.getFieldError()).getDefaultMessage())
                 .status(BAD_REQUEST)
                 .build();
 
-        log.warn("An exception '{}' was thrown with code '{}'",
+        log.warn("An exception '{}' was thrown with errorCode '{}'",
                 apiErrorResponse.getMessage(),
-                apiErrorResponse.getCode());
+                apiErrorResponse.getErrorCode());
 
         return new ResponseEntity<>(apiErrorResponse,
                 apiErrorResponse.getStatus());
@@ -50,14 +50,14 @@ public class ApiExceptionHandler {
     @ExceptionHandler
     private ResponseEntity<ApiErrorResponse> handleTypeMismatchException(TypeMismatchException exception){
         ApiErrorResponse apiErrorResponse = ApiErrorResponse.builder()
-                .code("40002")
+                .errorCode("40002")
                 .message(exception.getMessage())
                 .status(BAD_REQUEST)
                 .build();
 
-        log.warn("An exception '{}' was thrown with code '{}'",
+        log.warn("An exception '{}' was thrown with errorCode '{}'",
                 apiErrorResponse.getMessage(),
-                apiErrorResponse.getCode());
+                apiErrorResponse.getErrorCode());
 
         return new ResponseEntity<>(apiErrorResponse,
                 apiErrorResponse.getStatus());
@@ -67,14 +67,14 @@ public class ApiExceptionHandler {
     private ResponseEntity<ApiErrorResponse> handleHttpMessageConversionException(
             HttpMessageConversionException exception){
         ApiErrorResponse apiErrorResponse = ApiErrorResponse.builder()
-                .code("40003")
+                .errorCode("40003")
                 .message(exception.getMessage())
                 .status(BAD_REQUEST)
                 .build();
 
-        log.warn("An exception '{}' was thrown with code '{}'",
+        log.warn("An exception '{}' was thrown with errorCode '{}'",
                 apiErrorResponse.getMessage(),
-                apiErrorResponse.getCode());
+                apiErrorResponse.getErrorCode());
 
         return new ResponseEntity<>(apiErrorResponse,
                 apiErrorResponse.getStatus());

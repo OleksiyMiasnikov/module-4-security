@@ -50,7 +50,6 @@ public class SecurityConfig {
                             .requestMatchers("/login").permitAll()
                             .requestMatchers("/signup").permitAll()
                             .requestMatchers("/refresh").permitAll()
-                            .requestMatchers("/secured").permitAll()
                             .requestMatchers(GET, "/**")
                             .hasAnyAuthority(Role.GUEST.name(), Role.USER.name(), Role.ADMIN.name())
                             .requestMatchers(POST, "/orders")

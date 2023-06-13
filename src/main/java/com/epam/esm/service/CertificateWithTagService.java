@@ -52,10 +52,10 @@ public class CertificateWithTagService{
         // if tag exists in the database, tagId get from database
         // else a new tag will be created with new tagId
         Long tagId;
-        List<Tag> tagList = tagRepo.findByName(request.getTag());
+        List<Tag> tagList = tagRepo.findByName(request.getTags());
         if (tagList.size() == 0) {
             Tag tag = Tag.builder()
-                    .name(request.getTag())
+                    .name(request.getTags())
                     .build();
             tagId = tagRepo.save(tag).getId();
         } else {

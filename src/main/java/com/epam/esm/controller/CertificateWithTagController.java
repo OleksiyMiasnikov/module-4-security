@@ -35,7 +35,7 @@ public class CertificateWithTagController{
             @RequestBody CertificateWithTagRequest request) {
         log.info("Creating a new certificate '{}' with tag '{}'.",
                 request.getName(),
-                request.getTag());
+                request.getTags());
         CertificateWithTagDTO createdDTO = mapper.toDTO(service.create(request));
         createdDTO.add(
                 linkTo(methodOn(CertificateWithTagController.class)
