@@ -1,8 +1,10 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithListOfTagsDTO;
+import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithListOfTagsRequest;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagDTO;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
+import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.service.CertificateWithTagService;
 import com.epam.esm.service.mapper.CertificateWithTagMapper;
@@ -29,26 +31,35 @@ public class CertificateWithTagController{
     private final CertificateWithTagService service;
     private final CertificateWithTagMapper mapper;
 
-    @PostMapping()
-    public CertificateWithTagDTO create(
-            @Valid
-            @RequestBody CertificateWithTagRequest request) {
-        log.info("Creating a new certificate '{}' with tag '{}'.",
-                request.getName(),
-                request.getTags());
-        CertificateWithTagDTO createdDTO = mapper.toDTO(service.create(request));
-        createdDTO.add(
-                linkTo(methodOn(CertificateWithTagController.class)
-                        .findById(createdDTO.getId()))
-                        .withSelfRel());
-        return createdDTO;
-    }
+//    @PostMapping()
+//    public CertificateWithTagDTO create(
+//            @Valid
+//            @RequestBody CertificateWithTagRequest request) {
+//        log.info("Creating a new certificate '{}' with tag '{}'.",
+//                request.getName(),
+//                request.getTags());
+//        CertificateWithTagDTO createdDTO = mapper.toDTO(service.create(request));
+//        createdDTO.add(
+//                linkTo(methodOn(CertificateWithTagController.class)
+//                        .findById(createdDTO.getId()))
+//                        .withSelfRel());
+//        return createdDTO;
+//    }
 
 //    @GetMapping()
 //    public Page<CertificateWithTagDTO> findAll(Pageable pageable) {
 //        log.info("Getting all certificates with tags");
 //        return service.findAll(pageable).map(mapper::toDTO);
 //    }
+
+    @PostMapping()
+    public CertificateWithListOfTagsDTO create(
+            @Valid
+            @RequestBody CertificateWithListOfTagsRequest request) {
+        log.info("Creating a new certificate '{}.",
+                request.getName());
+        return service.create(request);
+    }
 
     @GetMapping()
     public Page<CertificateWithListOfTagsDTO> findAll(Pageable pageable) {
@@ -64,9 +75,16 @@ public class CertificateWithTagController{
     }
 
     @GetMapping("/{id}")
-    public CertificateWithTagDTO findById(@PathVariable("id") Long id) {
+    public CertificateWithListOfTagsDTO findById(@PathVariable("id") Long id) {
         log.info("Locking for certificate with tag by id: {}.", id);
-        return mapper.toDTO(service.findById(id));
+        return service.findById(id);
+    }
+
+    @PatchMapping("/{id}")
+    public CertificateWithListOfTagsDTO update(@PathVariable("id") Long id,
+                                               @RequestBody CertificateWithListOfTagsRequest request) {
+        log.info("Updating certificate with tags by id: {}.", id);
+        return service.update(id, request);
     }
 
     @GetMapping("/search")
@@ -76,4 +94,11 @@ public class CertificateWithTagController{
         Page<CertificateWithTag> page = service.findByPartOfNameOrDescription(pattern, pageable);
         return page.map(mapper::toDTO);
     }
+
+    @DeleteMapping("/{id}")
+    public boolean delete(@PathVariable("id") Long id) {
+        log.info("Deleting certificate by id: {}.", id);
+        return service.delete(id);
+    }
+
 }

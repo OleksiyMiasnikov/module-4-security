@@ -10,11 +10,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
     Page<Tag> findByName(String name, Pageable pageable);
-    List<Tag> findByName(String name);
+
+    Optional<Tag> findByName(String name);
 
     @Query("SELECT t.name FROM Tag t WHERE t.id in :ids" )
     List<String> findByIds(@Param("ids") List<Long> tagIds);

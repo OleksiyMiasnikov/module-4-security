@@ -70,12 +70,9 @@ public class TagService {
      * @return List {@link Tag} List of tags.
      */
     public Tag findByName(String name) {
-        log.info("Locking for tag by name: {} with pageable.", name);
-        List<Tag> tags = repo.findByName(name);
-        if (tags.size() == 0) {
-            throw new ApiEntityNotFoundException("Requested tag was not found (name = " + name + ")");
-        }
-        return tags.get(0);
+        log.info("Locking for tag by name: {}.", name);
+        return repo.findByName(name).orElseThrow(() -> new ApiEntityNotFoundException(
+                "Requested tag was not found (name = " + name + ")"));
     }
 
     /**

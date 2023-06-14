@@ -2,6 +2,7 @@ package com.epam.esm.service.mapper;
 
 import com.epam.esm.model.DTO.certificate.CertificateDTO;
 import com.epam.esm.model.DTO.certificate.CreateCertificateRequest;
+import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithListOfTagsRequest;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
 import com.epam.esm.model.entity.Certificate;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,10 @@ public class CertificateMapper {
     private final ModelMapper apiMapper;
 
     public Certificate toCertificate(CertificateWithTagRequest request) {
+        return apiMapper.map(request, Certificate.class);
+    }
+
+    public Certificate toCertificate(CertificateWithListOfTagsRequest request) {
         return apiMapper.map(request, Certificate.class);
     }
 

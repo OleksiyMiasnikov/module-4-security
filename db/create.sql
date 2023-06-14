@@ -63,13 +63,7 @@ CREATE TABLE IF NOT EXISTS `module_4_db`.`certificate_with_tag` (
   `tag_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`, `certificate_id`, `tag_id`),
   INDEX `fk_certificate_with_tag_certificate1_idx` (`certificate_id` ASC) VISIBLE,
-  INDEX `fk_certificate_with_tag_tag1_idx` (`tag_id` ASC) VISIBLE,
-  CONSTRAINT `fk_certificate_with_tag_certificate1`
-    FOREIGN KEY (`certificate_id`)
-    REFERENCES `module_4_db`.`certificate` (`id`),
-  CONSTRAINT `fk_certificate_with_tag_tag1`
-    FOREIGN KEY (`tag_id`)
-    REFERENCES `module_4_db`.`tag` (`id`))
+  INDEX `fk_certificate_with_tag_tag1_idx` (`tag_id` ASC) VISIBLE)
 ENGINE = InnoDB
 AUTO_INCREMENT = 9
 DEFAULT CHARACTER SET = utf8mb3;
@@ -104,10 +98,7 @@ CREATE TABLE IF NOT EXISTS `module_4_db`.`user_order` (
   `certificate_with_tag_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`, `user_id`, `certificate_with_tag_id`),
   INDEX `fk_user_order_user1_idx` (`user_id` ASC) VISIBLE,
-  INDEX `fk_user_order_certificate_with_tag1_idx` (`certificate_with_tag_id` ASC) VISIBLE,
-  CONSTRAINT `fk_user_order_certificate_with_tag1`
-    FOREIGN KEY (`certificate_with_tag_id`)
-    REFERENCES `module_4_db`.`certificate_with_tag` (`id`),
+  INDEX `fk_user_order_certificate_with_tag1_idx` (`certificate_with_tag_id` ASC) VISIBLE, 
   CONSTRAINT `fk_user_order_user1`
     FOREIGN KEY (`user_id`)
     REFERENCES `module_4_db`.`user` (`id`))
