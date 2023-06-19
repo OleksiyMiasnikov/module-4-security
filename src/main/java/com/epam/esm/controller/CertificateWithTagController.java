@@ -87,12 +87,19 @@ public class CertificateWithTagController{
         return service.update(id, request);
     }
 
+//    @GetMapping("/search")
+//    public Page<CertificateWithTagDTO> findByPartOfNameOrDescription(
+//            Pageable pageable, @Param("pattern") String pattern) {
+//        log.info("Locking for certificates by part of name or description");
+//        Page<CertificateWithTag> page = service.findByPartOfNameOrDescription(pattern, pageable);
+//        return page.map(mapper::toDTO);
+//    }
+
     @GetMapping("/search")
-    public Page<CertificateWithTagDTO> findByPartOfNameOrDescription(
+    public Page<CertificateWithListOfTagsDTO> findByPartOfNameOrDescription(
             Pageable pageable, @Param("pattern") String pattern) {
         log.info("Locking for certificates by part of name or description");
-        Page<CertificateWithTag> page = service.findByPartOfNameOrDescription(pattern, pageable);
-        return page.map(mapper::toDTO);
+        return service.findByPartOfNameOrDescription(pattern, pageable);
     }
 
     @DeleteMapping("/{id}")

@@ -17,6 +17,7 @@ import com.epam.esm.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -146,21 +147,48 @@ public class CertificateWithTagService{
         return repo.findByTagIds(tagIds, pageable);
     }
 
+//    /**
+//     * Finds all certificates by part of name/description.
+//     *
+//     * @param pattern part of name/description
+//     * @return List of {@link CertificateWithTag} List of all appropriate certificates with tags
+//     */
+//    public Page<CertificateWithTag> findByPartOfNameOrDescription(String pattern, Pageable pageable) {
+//        log.info("Getting certificates by part of name or description.");
+//
+//        Set<Certificate> set = new HashSet<>(certificateRepo.findByNameContaining(pattern));
+//        set.addAll(certificateRepo.findByDescriptionContaining(pattern));
+//
+//        List<Long> listOfCertificateId = new ArrayList<>(set.stream().map(Certificate::getId).toList());
+//
+//        return repo.findByCertificateIds(listOfCertificateId, pageable);
+//    }
+
     /**
      * Finds all certificates by part of name/description.
      *
      * @param pattern part of name/description
      * @return List of {@link CertificateWithTag} List of all appropriate certificates with tags
      */
-    public Page<CertificateWithTag> findByPartOfNameOrDescription(String pattern, Pageable pageable) {
+    public Page<CertificateWithListOfTagsDTO> findByPartOfNameOrDescription(String pattern, Pageable pageable) {
         log.info("Getting certificates by part of name or description.");
 
         Set<Certificate> set = new HashSet<>(certificateRepo.findByNameContaining(pattern));
         set.addAll(certificateRepo.findByDescriptionContaining(pattern));
+        List<CertificateWithListOfTagsDTO> list = set.stream().map(mapper::toDTO).toList();
 
-        List<Long> listOfCertificateId = new ArrayList<>(set.stream().map(Certificate::getId).toList());
+        int start = (int)pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), list.size());
+        final Page<CertificateWithListOfTagsDTO> page =
+                new PageImpl<>(list.subList(start, end), pageable, list.size());
 
-        return repo.findByCertificateIds(listOfCertificateId, pageable);
+        for (CertificateWithListOfTagsDTO element: page.getContent()) {
+            List<Long> tagsIds = repo.findByCertificateId(element.getId());
+            List<String> tagsNames = tagRepo.findByIds(tagsIds);
+            element.setTags(tagsNames);
+        }
+
+        return page;
     }
 
     /**
