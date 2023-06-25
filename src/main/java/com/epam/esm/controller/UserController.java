@@ -24,7 +24,7 @@ public class UserController {
     private final UserService service;
     private final UserMapper mapper;
 
-    @GetMapping("/signup")
+    @PostMapping("/signup")
     public UserDTO signUp(
             @Valid @RequestBody CreateUserRequest request) {
         log.info("Creating tag with name: {}.", request.getName());
