@@ -47,6 +47,7 @@ public class AuthenticateController {
     public ResponseEntity<LoginResponse> refreshTokens(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
         LoginResponse loginResponse = service.refreshTokens(authorization);
         HttpHeaders headers = new HttpHeaders();
+        headers.setAccessControlExposeHeaders(List.of("access_token", "refresh_token"));
         headers.add("access_token", loginResponse.getAccessToken());
         headers.add("refresh_token", loginResponse.getRefreshToken());
 

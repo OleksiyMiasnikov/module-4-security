@@ -120,7 +120,7 @@ public class AuthenticateService {
         String newRefreshToken = issueRefreshToken(principal.getUserId());
 
         storage.replace(principal.getUserId(), newRefreshToken);
-        log.info("Refresh token added. Key: {}, value: {}.", principal.getUserId(), refreshToken);
+        log.info("Refresh token added. Key: {}, value: {}.", principal.getUserId(), newRefreshToken);
 
         return LoginResponse.builder()
                 .accessToken(newAccessToken)
@@ -140,7 +140,7 @@ public class AuthenticateService {
         log.info("Issuing the new JWT.");
         return JWT.create()
                 .withSubject(String.valueOf(userId))
-                .withExpiresAt(Instant.now().plus(Duration.of(15, ChronoUnit.MINUTES)))
+                .withExpiresAt(Instant.now().plus(Duration.of(1, ChronoUnit.MINUTES)))
                 .withClaim("name", name)
                 .withClaim("authorities", roles)
                 .sign(Algorithm.HMAC256(properties.getSecretKey()));
