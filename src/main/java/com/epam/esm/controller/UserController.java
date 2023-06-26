@@ -27,13 +27,13 @@ public class UserController {
     @PostMapping("/signup")
     public UserDTO signUp(
             @Valid @RequestBody CreateUserRequest request) {
-        log.info("Creating tag with name: {}.", request.getName());
+        log.info("Creating user with name: {}.", request.getName());
         return mapper.toDTO(service.create(request));
     }
 
     @GetMapping("/users")
     public Page<UserDTO> findAll(Pageable pageable) {
-        log.info("Getting all certificates");
+        log.info("Getting all users");
         Page<User> page = service.findAll(pageable);
         return page.map(mapper::toDTO);
     }
