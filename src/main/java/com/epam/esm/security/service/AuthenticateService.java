@@ -137,7 +137,7 @@ public class AuthenticateService {
      * @return access json web token
      */
     public String issueAccessToken(Long userId, String name, List<String> roles){
-        log.info("Issuing the new JWT.");
+        log.info("Issuing the new access JWT.");
         return JWT.create()
                 .withSubject(String.valueOf(userId))
                 .withExpiresAt(Instant.now().plus(Duration.of(1, ChronoUnit.MINUTES)))
@@ -153,7 +153,7 @@ public class AuthenticateService {
      * @return refresh json web token
      */
     public String issueRefreshToken(Long userId){
-        log.info("Issuing the new JWT.");
+        log.info("Issuing the new refresh JWT.");
         return JWT.create()
                 .withSubject(String.valueOf(userId))
                 .withExpiresAt(Instant.now().plus(Duration.of(1, ChronoUnit.HOURS)))

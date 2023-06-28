@@ -60,6 +60,10 @@ public class UserService {
      */
     public User create(CreateUserRequest request) {
         log.info("Creating a new user with name: {}.", request.getName());
+        if (repo.findByName(request.getName()).isPresent()) {
+            throw new ApiEntityNotFoundException(
+                    "User with name= " + request.getName() + " is present");
+        }
         User user = mapper.toUser(request);
         return repo.save(user);
     }
