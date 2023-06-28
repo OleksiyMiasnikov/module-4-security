@@ -23,6 +23,9 @@ public interface CertificateWithTagRepository extends JpaRepository<CertificateW
     @Query("FROM CertificateWithTag c WHERE c.tagId in :ids" )
     Page<CertificateWithTag> findByTagIds(@Param("ids") List<Long> tagIds, Pageable pageable);
 
+    @Query("SELECT c.certificateId FROM CertificateWithTag c WHERE c.tagId in :ids" )
+    List<Long> findCertificateIdsByTagIds(@Param("ids") List<Long> tagIds);
+
     void deleteByCertificateId(Long certificateId);
 
     CertificateWithTag findByCertificateIdAndTagId(Long certificateId, Long tagId);

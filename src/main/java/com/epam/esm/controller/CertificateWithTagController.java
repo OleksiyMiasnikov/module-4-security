@@ -97,9 +97,11 @@ public class CertificateWithTagController{
 
     @GetMapping("/search")
     public Page<CertificateWithListOfTagsDTO> findByPartOfNameOrDescription(
-            Pageable pageable, @Param("pattern") String pattern) {
+            Pageable pageable,
+            @Param("pattern") String pattern,
+            @Param("tags") String ... tags) {
         log.info("Locking for certificates by part of name or description");
-        return service.findByPartOfNameOrDescription(pattern, pageable);
+        return service.findByPartOfNameOrDescription(pattern, tags, pageable);
     }
 
     @DeleteMapping("/{id}")

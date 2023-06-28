@@ -92,7 +92,7 @@ public class AuthenticateService {
      * @return {@link LoginResponse} with created json web token
      */
     public LoginResponse refreshTokens(String authorization) {
-        log.info("Authenticating user.");
+        log.info("Verifying refresh token");
 
         String token = authorization.substring("Bearer ".length());
 
@@ -107,6 +107,7 @@ public class AuthenticateService {
 
         if (!refreshToken.equals(token)) {
             log.warn("!!! Refresh token is forged !!!");
+            log.warn("{} <> {}", refreshToken, token);
             throw new RefreshTokenFailException("Refresh token is forged!");
         }
 

@@ -170,15 +170,38 @@ public class CertificateWithTagService{
      * @param pattern part of name/description
      * @return List of {@link CertificateWithTag} List of all appropriate certificates with tags
      */
-    public Page<CertificateWithListOfTagsDTO> findByPartOfNameOrDescription(String pattern, Pageable pageable) {
+    public Page<CertificateWithListOfTagsDTO> findByPartOfNameOrDescription(
+            String pattern,
+            String[] tags,
+            Pageable pageable) {
+
+        log.info("Getting all certificates by tag.");
+
+        //Getting tags ids by tags names
+        List<Long> tagIds = new ArrayList<>();
+        for (String name : tags) {
+            tagRepo.findByName(name).ifPresent(tag -> tagIds.add(tag.getId()));
+        }
+
+        //Getting certificate ids by tags ids
+        Set<Long> certificateIds = new HashSet<>(repo.findCertificateIdsByTagIds(tagIds));
+
+        //Getting certificate by ids
+        Set<Certificate> set = new HashSet<>(certificateRepo.findByIds(certificateIds.stream().toList()));
+
         log.info("Getting certificates by part of name or description.");
 
-        Set<Certificate> set = new HashSet<>(certificateRepo.findByNameContaining(pattern));
-        set.addAll(certificateRepo.findByDescriptionContaining(pattern));
+        if (!pattern.isEmpty()) {
+            //Getting certificate by name and description pattern
+            set.addAll(certificateRepo.findByNameContaining(pattern));
+            set.addAll(certificateRepo.findByDescriptionContaining(pattern));
+        }
+
         List<CertificateWithListOfTagsDTO> list = set.stream().map(mapper::toDTO).toList();
 
         int start = (int)pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), list.size());
+
         final Page<CertificateWithListOfTagsDTO> page =
                 new PageImpl<>(list.subList(start, end), pageable, list.size());
 
