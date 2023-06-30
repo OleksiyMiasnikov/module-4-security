@@ -107,10 +107,10 @@ public class CertificateWithTagService{
      * @param pageable page parameters
      * @return List of {@link CertificateWithTag} List of all certificates with tags from database
      */
-    public Page<CertificateWithTag> findAll(Pageable pageable) {
-        log.info("Getting all certificates with tags.");
-        return repo.findAll(pageable);
-    }
+//    public Page<CertificateWithTag> findAll(Pageable pageable) {
+//        log.info("Getting all certificates with tags.");
+//        return repo.findAll(pageable);
+//    }
 
     /**
      * Gets all certificates with list of tags by page.
@@ -146,23 +146,6 @@ public class CertificateWithTagService{
         }
         return repo.findByTagIds(tagIds, pageable);
     }
-
-//    /**
-//     * Finds all certificates by part of name/description.
-//     *
-//     * @param pattern part of name/description
-//     * @return List of {@link CertificateWithTag} List of all appropriate certificates with tags
-//     */
-//    public Page<CertificateWithTag> findByPartOfNameOrDescription(String pattern, Pageable pageable) {
-//        log.info("Getting certificates by part of name or description.");
-//
-//        Set<Certificate> set = new HashSet<>(certificateRepo.findByNameContaining(pattern));
-//        set.addAll(certificateRepo.findByDescriptionContaining(pattern));
-//
-//        List<Long> listOfCertificateId = new ArrayList<>(set.stream().map(Certificate::getId).toList());
-//
-//        return repo.findByCertificateIds(listOfCertificateId, pageable);
-//    }
 
     /**
      * Finds all certificates by part of name/description.
@@ -221,15 +204,6 @@ public class CertificateWithTagService{
      * @return {@link CertificateWithTag} CertificateWithTag
      * @throws if a certificate with tag with a given id doesn't exist throws {@link ApiEntityNotFoundException}
      */
-//    public CertificateWithTag findById(Long id) {
-//        log.info("Locking for certificate with tag by id: {}.", id);
-//
-//        return repo.findById(id)
-//                .orElseThrow(() -> new ApiEntityNotFoundException(
-//                        "Requested certificate with tag was not found (id=" + id + ")"
-//                        ));
-//    }
-
     public CertificateWithListOfTagsDTO findById(Long id) {
         log.info("Locking for certificate with tags by id: {}.", id);
         Certificate certificate = certificateRepo.findById(id)

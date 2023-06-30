@@ -2,7 +2,6 @@ package com.epam.esm.config;
 
 import com.epam.esm.model.DTO.certificate.CertificateDTO;
 import com.epam.esm.model.DTO.certificate.CreateCertificateRequest;
-import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithListOfTagsRequest;
 import com.epam.esm.model.DTO.user.CreateUserRequest;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.Role;

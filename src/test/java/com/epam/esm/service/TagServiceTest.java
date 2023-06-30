@@ -83,14 +83,14 @@ class TagServiceTest {
 
     @Test
     void findByName() {
-        when(repo.findByName(name)).thenReturn(List.of(tag));
+        when(repo.findByName(name)).thenReturn(Optional.of(tag));
         Tag result = subject.findByName(name);
         assertThat(result).isEqualTo(tag);
     }
 
     @Test
     void findByNameThrowException() {
-        when(repo.findByName(name)).thenReturn(List.of());
+        when(repo.findByName(name)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> subject.findByName(name))
                 .isInstanceOf(ApiEntityNotFoundException.class)

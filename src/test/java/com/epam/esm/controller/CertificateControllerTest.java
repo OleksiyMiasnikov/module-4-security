@@ -109,7 +109,8 @@ class CertificateControllerTest {
                         .param("size", "4"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString(expectedFindAll)));
+                .andExpect(jsonPath("$.content[0]").value(certificateDTOList.get(0)))
+                .andExpect(jsonPath("$.content[1]").value(certificateDTOList.get(1)));
 
         verify(service).findAll(pageable);
     }
