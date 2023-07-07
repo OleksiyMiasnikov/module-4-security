@@ -58,6 +58,9 @@ public class CertificateWithTagController {
             @Param("pattern") String pattern,
             @Param("tags") String... tags) {
         log.info("Locking for certificates by part of name or description");
+        if (tags == null) {
+            tags = new String[0];
+        }
         return service.findByPartOfNameOrDescription(pattern, tags, pageable);
     }
 

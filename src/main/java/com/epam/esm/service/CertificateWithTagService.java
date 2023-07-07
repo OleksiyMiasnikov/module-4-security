@@ -21,7 +21,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -180,7 +180,44 @@ public class CertificateWithTagService{
             set.addAll(certificateRepo.findByDescriptionContaining(pattern));
         }
 
-        List<CertificateWithListOfTagsDTO> list = set.stream().map(mapper::toDTO).toList();
+        List<CertificateWithListOfTagsDTO> list = new ArrayList<>(set.stream().map(mapper::toDTO).toList());
+
+        for (var sort: pageable.getSort()) {
+            log.info(sort.getProperty() + " : " + sort.getDirection());
+            switch (sort.getProperty()) {
+                case ("createDate") -> {
+                    if (sort.getDirection().isDescending()) {
+                        list.sort(Comparator.comparing(CertificateWithListOfTagsDTO::getCreateDate).reversed());
+                    } else {
+                        list.sort(Comparator.comparing(CertificateWithListOfTagsDTO::getCreateDate));
+                    }
+                }
+                case ("name") -> {
+                    if (sort.getDirection().isDescending()) {
+                        list.sort(Comparator.comparing(CertificateWithListOfTagsDTO::getName).reversed());
+                    } else {
+                        list.sort(Comparator.comparing(CertificateWithListOfTagsDTO::getName));
+                    }
+                }
+                case ("description") -> {
+                    if (sort.getDirection().isDescending()) {
+                        list.sort(Comparator.comparing(CertificateWithListOfTagsDTO::getDescription).reversed());
+                    } else {
+                        list.sort(Comparator.comparing(CertificateWithListOfTagsDTO::getDescription));
+                    }
+                }
+                case ("price") -> {
+                    if (sort.getDirection().isDescending()) {
+                        list.sort(Comparator.comparing(CertificateWithListOfTagsDTO::getPrice).reversed());
+                    } else {
+                        list.sort(Comparator.comparing(CertificateWithListOfTagsDTO::getPrice));
+                    }
+                }
+            }
+        }
+
+        //list.sort(Comparator.comparing(CertificateWithListOfTagsDTO::getPrice).reversed());
+        //PageRequest.of(0, 3, Sort.by("name"));
 
         int start = (int)pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), list.size());
