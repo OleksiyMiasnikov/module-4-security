@@ -22,9 +22,9 @@ public class CertificateWithListOfTagsRequest {
     @NotEmpty(message = "Field 'description' can not be empty!")
     private String description;
     @NotNull(message = "Field 'price' can not be empty!")
-    @DecimalMin(value = "0.01", message = "Field 'duration' should be more then 0!")
+    @DecimalMin(value = "0.01", message = "Field 'price' should be more then 0!")
     private Double price;
     @NotNull(message = "Field 'duration' can not be empty!")
-    @Min(value = 1, message = "Field 'duration' should be more then 0!")
+    @Min(value = 0, message = "Field 'duration' should be equal or more then 0!")
     private Integer duration;
 }
