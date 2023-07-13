@@ -153,6 +153,8 @@ public class CertificateWithTagService{
      * @param pattern part of name/description
      * @return List of {@link CertificateWithTag} List of all appropriate certificates with tags
      */
+    // todo optimize it
+    @Transactional
     public Page<CertificateWithListOfTagsDTO> findByPartOfNameOrDescription(
             String pattern,
             String[] tags,
