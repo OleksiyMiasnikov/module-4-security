@@ -19,11 +19,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  *  A service to work with {@link CertificateWithTag}.
@@ -155,7 +155,7 @@ public class CertificateWithTagService{
      */
     // todo optimize it
     @Transactional
-    public Page<CertificateWithListOfTagsDTO> findByPartOfNameOrDescription(
+    public Page<CertificateWithListOfTagsDTO> findByPartOfNameOrDescription1(
             String pattern,
             String[] tags,
             Pageable pageable) {
@@ -224,6 +224,7 @@ public class CertificateWithTagService{
         int start = (int)pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), list.size());
 
+
         final Page<CertificateWithListOfTagsDTO> page =
                 new PageImpl<>(list.subList(start, end), pageable, list.size());
 
@@ -234,6 +235,46 @@ public class CertificateWithTagService{
         }
 
         return page;
+    }
+
+    /**
+     * Finds all certificates by part of name/description.
+     *
+     * @param pattern part of name/description
+     * @return List of {@link CertificateWithTag} List of all appropriate certificates with tags
+     */
+    // todo optimize it
+    @Transactional
+    public Page<CertificateWithListOfTagsDTO> findByPartOfNameOrDescription(
+            String pattern,
+            String[] tags,
+            Pageable pageable) {
+
+        log.info("Getting all certificates by tag.");
+
+        //Getting tags ids by tags names
+        List<Long> tagIds = new ArrayList<>();
+        for (String name : tags) {
+            tagRepo.findByName(name).ifPresent(tag -> tagIds.add(tag.getId()));
+        }
+
+        //Getting certificate ids by tags ids
+        List<Long> certificateIds = new ArrayList<>(repo.findCertificateIdsByTagIds(tagIds));
+
+        if (pattern.isEmpty()) {
+            pattern = null;
+        }
+        Page<CertificateWithListOfTagsDTO> result =
+                certificateRepo
+                        .findByListOfTagsAndPattern(certificateIds, pattern, pageable)
+                        .map(mapper::toDTO);
+        for (CertificateWithListOfTagsDTO element: result.getContent()) {
+            List<Long> tagsIds = repo.findByCertificateId(element.getId());
+            List<String> tagsNames = tagRepo.findByIds(tagsIds);
+            element.setTags(tagsNames);
+        }
+
+        return result;
     }
 
     /**
