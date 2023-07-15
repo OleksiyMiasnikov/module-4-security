@@ -16,25 +16,21 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     List<Certificate> findByDescriptionContaining(String pattern);
 
-    @Query("FROM Certificate c WHERE c.id in :ids" )
-    List<Certificate> findByIds(@Param("ids") List<Long> ids);
-
-    /*
-   ` select * from certificate
-   ` where name like '%456%'
-   ` OR description like '%JAVA%'
-    OR id in (select certificate_id from certificate_with_tag
-    where tag_id in (select id from tag where name in ('tag_1')))
-     */
-
     @Query(
             "FROM Certificate c " +
             "WHERE c.name LIKE %:pattern% " +
             "OR c.description LIKE %:pattern% " +
-                    "OR c.id in:ids"
+                    "OR c.id in (SELECT c.certificateId " +
+                    "            FROM CertificateWithTag c " +
+                    "            WHERE c.tagId in " +
+                    "            (" +
+                    "               SELECT t.id " +
+                    "               FROM Tag t " +
+                    "               WHERE t.name in :tags " +
+                    "            ))"
     )
     Page<Certificate> findByListOfTagsAndPattern(
-            @Param("ids") List<Long> ids,
+            @Param("tags") String[] tags,
             String pattern,
             Pageable pageable);
 }

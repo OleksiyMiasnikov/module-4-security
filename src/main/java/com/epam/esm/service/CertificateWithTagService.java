@@ -17,13 +17,13 @@ import com.epam.esm.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.lang.reflect.Field;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  *  A service to work with {@link CertificateWithTag}.
@@ -81,7 +81,6 @@ public class CertificateWithTagService{
 
         // if tag exists in the database, tagId get from database
         // else a new tag will be created with new tagId
-
         List<Long> tagsIds = getTagsIds(request.getTags());
 
         Certificate certificate = certificateMapper.toCertificate(request);
@@ -101,18 +100,6 @@ public class CertificateWithTagService{
     }
 
     /**
-     * Finds all certificates with tags by page.
-     * Result will be selected by page and size.
-     *
-     * @param pageable page parameters
-     * @return List of {@link CertificateWithTag} List of all certificates with tags from database
-     */
-//    public Page<CertificateWithTag> findAll(Pageable pageable) {
-//        log.info("Getting all certificates with tags.");
-//        return repo.findAll(pageable);
-//    }
-
-    /**
      * Gets all certificates with list of tags by page.
      * Result will be selected by page and size.
      *
@@ -121,14 +108,7 @@ public class CertificateWithTagService{
      */
     public Page<CertificateWithListOfTagsDTO> getAll(Pageable pageable) {
         log.info("Getting all certificates with list of tags.");
-        Page<CertificateWithListOfTagsDTO> result =
-                certificateRepo.findAll(pageable).map(mapper::toDTO);
-        for (CertificateWithListOfTagsDTO element: result.getContent()) {
-            List<Long> tagsIds = repo.findByCertificateId(element.getId());
-            List<String> tagsNames = tagRepo.findByIds(tagsIds);
-            element.setTags(tagsNames);
-        }
-        return result;
+        return certificateRepo.findAll(pageable).map(mapper::toDTO);
     }
 
     /**
@@ -138,6 +118,7 @@ public class CertificateWithTagService{
      * @param tagList list with tags
      * @return List of {@link CertificateWithTag} List of all certificates with appropriate tag
      */
+    @Transactional
     public Page<CertificateWithTag> findByTagNames(Pageable pageable, List<String> tagList) {
         log.info("Getting all certificates by tag.");
         List<Long> tagIds = new ArrayList<>();
@@ -147,134 +128,29 @@ public class CertificateWithTagService{
         return repo.findByTagIds(tagIds, pageable);
     }
 
-    /**
-     * Finds all certificates by part of name/description.
-     *
-     * @param pattern part of name/description
-     * @return List of {@link CertificateWithTag} List of all appropriate certificates with tags
-     */
-    // todo optimize it
-    @Transactional
-    public Page<CertificateWithListOfTagsDTO> findByPartOfNameOrDescription1(
-            String pattern,
-            String[] tags,
-            Pageable pageable) {
-
-        log.info("Getting all certificates by tag.");
-
-        //Getting tags ids by tags names
-        List<Long> tagIds = new ArrayList<>();
-        for (String name : tags) {
-            tagRepo.findByName(name).ifPresent(tag -> tagIds.add(tag.getId()));
-        }
-
-        //Getting certificate ids by tags ids
-        Set<Long> certificateIds = new HashSet<>(repo.findCertificateIdsByTagIds(tagIds));
-
-        //Getting certificate by ids
-        Set<Certificate> set = new HashSet<>(certificateRepo.findByIds(certificateIds.stream().toList()));
-
-        log.info("Getting certificates by part of name or description.");
-
-        if (!pattern.isEmpty()) {
-            //Getting certificate by name and description pattern
-            set.addAll(certificateRepo.findByNameContaining(pattern));
-            set.addAll(certificateRepo.findByDescriptionContaining(pattern));
-        }
-
-        List<CertificateWithListOfTagsDTO> list = new ArrayList<>(set.stream().map(mapper::toDTO).toList());
-
-        for (var sort: pageable.getSort()) {
-            log.info(sort.getProperty() + " : " + sort.getDirection());
-            switch (sort.getProperty()) {
-                case ("createDate") -> {
-                    if (sort.getDirection().isDescending()) {
-                        list.sort(Comparator.comparing(CertificateWithListOfTagsDTO::getCreateDate).reversed());
-                    } else {
-                        list.sort(Comparator.comparing(CertificateWithListOfTagsDTO::getCreateDate));
-                    }
-                }
-                case ("name") -> {
-                    if (sort.getDirection().isDescending()) {
-                        list.sort(Comparator.comparing(CertificateWithListOfTagsDTO::getName).reversed());
-                    } else {
-                        list.sort(Comparator.comparing(CertificateWithListOfTagsDTO::getName));
-                    }
-                }
-                case ("description") -> {
-                    if (sort.getDirection().isDescending()) {
-                        list.sort(Comparator.comparing(CertificateWithListOfTagsDTO::getDescription).reversed());
-                    } else {
-                        list.sort(Comparator.comparing(CertificateWithListOfTagsDTO::getDescription));
-                    }
-                }
-                case ("price") -> {
-                    if (sort.getDirection().isDescending()) {
-                        list.sort(Comparator.comparing(CertificateWithListOfTagsDTO::getPrice).reversed());
-                    } else {
-                        list.sort(Comparator.comparing(CertificateWithListOfTagsDTO::getPrice));
-                    }
-                }
-            }
-        }
-
-        //list.sort(Comparator.comparing(CertificateWithListOfTagsDTO::getPrice).reversed());
-        //PageRequest.of(0, 3, Sort.by("name"));
-
-        int start = (int)pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), list.size());
-
-
-        final Page<CertificateWithListOfTagsDTO> page =
-                new PageImpl<>(list.subList(start, end), pageable, list.size());
-
-        for (CertificateWithListOfTagsDTO element: page.getContent()) {
-            List<Long> tagsIds = repo.findByCertificateId(element.getId());
-            List<String> tagsNames = tagRepo.findByIds(tagsIds);
-            element.setTags(tagsNames);
-        }
-
-        return page;
-    }
 
     /**
-     * Finds all certificates by part of name/description.
+     * Finds all certificates by array of tags and part of name/description.
      *
      * @param pattern part of name/description
+     * @param tags array with names of tags
      * @return List of {@link CertificateWithTag} List of all appropriate certificates with tags
      */
-    // todo optimize it
     @Transactional
     public Page<CertificateWithListOfTagsDTO> findByPartOfNameOrDescription(
             String pattern,
             String[] tags,
             Pageable pageable) {
 
-        log.info("Getting all certificates by tag.");
-
-        //Getting tags ids by tags names
-        List<Long> tagIds = new ArrayList<>();
-        for (String name : tags) {
-            tagRepo.findByName(name).ifPresent(tag -> tagIds.add(tag.getId()));
-        }
-
-        //Getting certificate ids by tags ids
-        List<Long> certificateIds = new ArrayList<>(repo.findCertificateIdsByTagIds(tagIds));
+        log.info("Getting all certificates by array of tags and pattern.");
 
         if (pattern.isEmpty()) {
             pattern = null;
         }
-        Page<CertificateWithListOfTagsDTO> result =
-                certificateRepo
-                        .findByListOfTagsAndPattern(certificateIds, pattern, pageable)
-                        .map(mapper::toDTO);
-        for (CertificateWithListOfTagsDTO element: result.getContent()) {
-            List<Long> tagsIds = repo.findByCertificateId(element.getId());
-            List<String> tagsNames = tagRepo.findByIds(tagsIds);
-            element.setTags(tagsNames);
-        }
 
-        return result;
+        return certificateRepo
+                .findByListOfTagsAndPattern(tags, pattern, pageable)
+                .map(mapper::toDTO);
     }
 
     /**
@@ -290,21 +166,16 @@ public class CertificateWithTagService{
                 .orElseThrow(() -> new ApiEntityNotFoundException(
                         "Requested certificate with tags was not found (id=" + id + ")"
                 ));
-
-        CertificateWithListOfTagsDTO result = mapper.toDTO(certificate);
-
-        List<Long> tagsIds = repo.findByCertificateId(certificate.getId());
-        List<String> tagsNames = tagRepo.findByIds(tagsIds);
-        result.setTags(tagsNames);
-
-        return result;
+        return mapper.toDTO(certificate);
     }
 
+    @Transactional
     public CertificateWithListOfTagsDTO update(Long id, CertificateWithListOfTagsRequest request) {
         log.info("Updating certificate by id: {}.", id);
 
         Certificate certificate = certificateMapper.toCertificate(request);
-        certificate.setCreateDate(certificateRepo.findById(id).get().getCreateDate());
+        certificateRepo.findById(id)
+                .ifPresent(value -> certificate.setCreateDate(value.getCreateDate()));
         certificate.setLastUpdateDate(DateUtil.getDate());
         certificateRepo.save(certificate);
 
@@ -317,7 +188,6 @@ public class CertificateWithTagService{
                         .certificateId(certificate.getId())
                         .tagId(tagId)
                         .build()));
-
         List<Long> difference = oldTagsIds.stream()
                 .filter(element -> !newTagsIds.contains(element))
                         .toList();
@@ -353,7 +223,9 @@ public class CertificateWithTagService{
             try {
                 certificateRepo.delete(deletedCertificate.get());
             } catch (Exception exception) {
-                throw new ApiEntityCouldNotBeDeletedException("Cannot delete a parent row: a foreign key constraint fails");
+                throw new ApiEntityCouldNotBeDeletedException(
+                        "Cannot delete a parent row: a foreign key constraint fails"
+                );
             }
             repo.deleteByCertificateId(id);
             return true;
