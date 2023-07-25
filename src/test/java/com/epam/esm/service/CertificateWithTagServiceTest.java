@@ -2,7 +2,7 @@ package com.epam.esm.service;
 
 import com.epam.esm.exception.ApiEntityNotFoundException;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithListOfTagsDTO;
-import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
+import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithListOfTagsRequest;
 import com.epam.esm.model.entity.Certificate;
 import com.epam.esm.model.entity.CertificateWithTag;
 import com.epam.esm.model.entity.Tag;
@@ -21,14 +21,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,12 +44,14 @@ class CertificateWithTagServiceTest {
     CertificateMapper certificateMapper;
 
     private CertificateWithTag certificateWithTag;
-    private CertificateWithTagRequest request;
+    private CertificateWithListOfTagsRequest request;
+    private CertificateWithListOfTagsDTO certificateWithListOfTagsDTO;
     private Certificate certificate;
     private Tag tag;    
     private String[] tags;
     private Pageable pageable;
-    private Page<CertificateWithTag> page;
+    private Page<Certificate> page;
+    private Page<CertificateWithListOfTagsDTO> pageCWLOT;
 
 
     @BeforeEach
@@ -66,8 +65,15 @@ class CertificateWithTagServiceTest {
                 .tagId(1L)
                 .certificateId(1L)
                 .build();
-        request = CertificateWithTagRequest.builder()
-                .tags("tag_name")
+        certificateWithListOfTagsDTO = CertificateWithListOfTagsDTO.builder()
+                .tags(List.of("tag_name"))
+                .name("certificate 1")
+                .description("description of certificate 1")
+                .price(100.50)
+                .duration(7)
+                .build();
+        request = CertificateWithListOfTagsRequest.builder()
+                .tags(new String[] {"tag_name"})
                 .name("certificate 1")
                 .description("description of certificate 1")
                 .price(100.50)
@@ -85,90 +91,55 @@ class CertificateWithTagServiceTest {
                 .name("tag_name")
                 .build();
         pageable = Pageable.ofSize(3).withPage(0);
-        page = new PageImpl<>(List.of(certificateWithTag));
+        pageCWLOT = new PageImpl<>(List.of(certificateWithListOfTagsDTO));
+        page = new PageImpl<>(List.of(certificate));
 
     }
 
 
     @Test
     void create() {
-        when(tagRepo.findByName(request.getTags())).thenReturn(Optional.of(tag));
-        when(certificateRepo.save(any(Certificate.class))).thenReturn(certificate);
-        when(repo.save(certificateWithTag)).thenReturn(certificateWithTag);
-        when(certificateMapper.toCertificate(any(CertificateWithTagRequest.class)))
-                .thenReturn(certificate);
 
-        assertThat(subject.create(request)).isEqualTo(certificateWithTag);
+        when(certificateMapper.toCertificate(request)).thenReturn(certificate);
+        when(certificateRepo.save(certificate)).thenReturn(certificate);
+        when(tagRepo.findByName(tag.getName())).thenReturn(Optional.of(tag));
+        when(repo.save(CertificateWithTag.builder()
+                .tagId(tag.getId())
+                .certificateId(certificate.getId())
+                .build())).thenReturn(certificateWithTag);
 
-        verify(repo).save(any(CertificateWithTag.class));
-    }
+        when(certificateRepo.findById(certificate.getId())).thenReturn(Optional.of(certificate));
+        when(mapper.toDTO(certificate)).thenReturn(certificateWithListOfTagsDTO);
 
+        assertThat(subject.create(request)).isEqualTo(certificateWithListOfTagsDTO);
 
-
-    @Test
-    void createWithNewTag() {
-        Long tagId = 5L;
-        Tag tag = Tag.builder()
-                .id(tagId)
-                .name("new tag")
-                .build();
-
-        certificateWithTag.setTagId(tag.getId());
-
-        when(tagRepo.findByName(request.getTags())).thenReturn(Optional.empty());
-        when(tagRepo.save(any(Tag.class))).thenReturn(tag);
-        when(certificateRepo.save(any(Certificate.class))).thenReturn(certificate);
-        when(repo.save(certificateWithTag)).thenReturn(certificateWithTag);
-        when(certificateMapper.toCertificate(any(CertificateWithTagRequest.class)))
-                .thenReturn(certificate);
-
-        assertThat(subject.create(request)).isEqualTo(certificateWithTag);
-
-        verify(repo).save(any(CertificateWithTag.class));
+        verify(certificateMapper).toCertificate(request);
+        verify(certificateRepo).save(certificate);
+        verify(repo).save(CertificateWithTag.builder()
+                .tagId(tag.getId())
+                .certificateId(certificate.getId())
+                .build());
     }
 
     @Test
-    void findAll() {
+    void getAll() {
         Pageable pageable = Pageable.ofSize(3).withPage(0);
-        Page<CertificateWithListOfTagsDTO> pageCWLOT = new PageImpl<>(List.of());
         Page<Certificate> page = new PageImpl<>(List.of(certificate));
-
-
+        when(certificateRepo.findAll(pageable)).thenReturn(page);
+        when(mapper.toDTO(certificate)).thenReturn(certificateWithListOfTagsDTO);
 
         Page<CertificateWithListOfTagsDTO> result = subject.getAll(pageable);
 
         assertThat(result.get().count()).isEqualTo(1);
-        assertThat(result).isEqualTo(page);
+        assertThat(result).isEqualTo(pageCWLOT);
     }
-
-
-    @Test
-    void findByTagName() {
-        Tag tag2 = Tag.builder()
-                .id(4L)
-                .name("tag 4")
-                .build();
-
-        when(tagRepo.findByName(tag.getName())).thenReturn(Optional.of(tag));
-        when(tagRepo.findByName(tag2.getName())).thenReturn(Optional.of(tag2));
-        when(repo.findByTagIds(List.of(tag.getId(), tag2.getId()), pageable))
-                .thenReturn(page);
-
-        List<CertificateWithTag> result = subject
-                .findByTagNames(pageable, List.of(tag.getName(), tag2.getName())).stream().toList();
-
-        assertThat(result).isEqualTo(List.of(certificateWithTag));
-
-        verify(tagRepo, times(2)).findByName(any());
-        verify(repo).findByTagIds(List.of(tag.getId(), tag2.getId()), pageable);
-    }
-
 
     @Test
     void findById() {
-        when(repo.findById(1L)).thenReturn(Optional.of(certificateWithTag));
+        when(certificateRepo.findById(1L)).thenReturn(Optional.of(certificate));
+        when(mapper.toDTO(certificate)).thenReturn(certificateWithListOfTagsDTO);
         CertificateWithListOfTagsDTO result = subject.findById(1L);
-        assertThat(result).isEqualTo(certificateWithTag);
+        assertThat(result).isEqualTo(certificateWithListOfTagsDTO);
     }
 
     @Test
@@ -183,17 +154,39 @@ class CertificateWithTagServiceTest {
     @Test
     void findByPartOfNameOrDescription() {
         String pattern = "pattern";
-
-        when(certificateRepo.findByNameContaining(pattern)).thenReturn(List.of(certificate));
-        when(certificateRepo.findByDescriptionContaining(pattern)).thenReturn(List.of(certificate));
-        when(repo.findByCertificateIds(List.of(certificate.getId()), pageable)).thenReturn(page);
+        when(certificateRepo.findByListOfTagsAndPattern(tags, pattern, pageable))
+                .thenReturn(page);
+        when(mapper.toDTO(certificate)).thenReturn(certificateWithListOfTagsDTO);
 
         assertThat(subject.findByPartOfNameOrDescription(pattern, tags, pageable))
-                .isEqualTo(page);
+                .isEqualTo(pageCWLOT);
 
-        verify(certificateRepo).findByNameContaining(pattern);
-        verify(certificateRepo).findByDescriptionContaining(pattern);
-        verify(repo).findByCertificateIds(List.of(certificate.getId()), pageable);
+        verify(certificateRepo).findByListOfTagsAndPattern(tags, pattern, pageable);
+        verify(mapper).toDTO(certificate);
+    }
 
+    @Test
+    void delete() {
+        when(certificateRepo.findById(10L)).thenReturn(Optional.of(certificate));
+
+        assertThat(subject.delete(10L)).isTrue();
+
+        verify(certificateRepo).findById(10L);
+        verify(certificateRepo).delete(certificate);
+    }
+
+    @Test
+    void deleteReturnFalse() {
+        when(certificateRepo.findById(10L)).thenReturn(Optional.empty());
+
+        assertThat(subject.delete(10L)).isFalse();
+
+        verify(certificateRepo).findById(10L);
+        verify(certificateRepo, never()).delete(certificate);
+    }
+
+    @Test
+    void update() {
+        // todo
     }
 }

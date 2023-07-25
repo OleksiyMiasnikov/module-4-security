@@ -1,5 +1,7 @@
 package com.epam.esm.util;
 
+import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithListOfTagsDTO;
+import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithListOfTagsRequest;
 import com.epam.esm.model.DTO.certificate_with_tag.CertificateWithTagRequest;
 import com.epam.esm.model.DTO.tag.CreateTagRequest;
 import com.epam.esm.model.DTO.user.CreateUserRequest;
@@ -85,16 +87,17 @@ public class Import1000 {
         for (int count = 0; count < 10000; count++) {
             Tag tag = tags.get(random.nextInt(tags.size()));
             String certificateName = "Certificate #" + count;
-            CertificateWithTagRequest request = CertificateWithTagRequest.builder()
-                    .tags(tag.getName())
+            CertificateWithListOfTagsRequest request = CertificateWithListOfTagsRequest.builder()
+                    .tags(new String[] {tag.getName()})
                     .name(certificateName)
                     .description(certificateName + " with tag:" + tag.getName() + " description")
                     .price(random.nextInt(100000)/100.0)
                     .duration(random.nextInt(180))
                     .build();
-            CertificateWithTag certificateWithTag = certificateWithTagService.create(request);
+            CertificateWithListOfTagsDTO certificateWithListOfTagsDTO =
+                    certificateWithTagService.create(request);
             userOrderService.create(CreateUserOrderRequest.builder()
-                            .certificateWithTagId(certificateWithTag.getId())
+                            .certificateWithTagId(certificateWithListOfTagsDTO.getId())
                             .userId(users.get(random.nextInt(users.size())).getId())
                             .build());
         }

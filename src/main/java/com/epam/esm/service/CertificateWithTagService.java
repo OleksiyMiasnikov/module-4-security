@@ -39,41 +39,41 @@ public class CertificateWithTagService{
     private final CertificateMapper certificateMapper;
     private final CertificateWithListOfTagsMapper mapper;
 
-    /**
-     * Creates new record of certificate with tag.
-     * If tag doesn't exist, it will be created
-     *
-     * @param request - created certificate with tag request
-     * @return {@link CertificateWithTag} created tag
-     */
-    @Transactional
-    public CertificateWithTag create(CertificateWithTagRequest request) {
-        log.info("Creating a new certificate with tag.");
-
-        // if tag exists in the database, tagId get from database
-        // else a new tag will be created with new tagId
-        Long tagId;
-        Optional<Tag> optionalTag = tagRepo.findByName(request.getTags());
-        if (optionalTag.isEmpty()) {
-            Tag tag = Tag.builder()
-                    .name(request.getTags())
-                    .build();
-            tagId = tagRepo.save(tag).getId();
-        } else {
-            tagId = optionalTag.get().getId();
-        }
-
-        Certificate certificate = certificateMapper.toCertificate(request);
-        certificate.setCreateDate(DateUtil.getDate());
-        certificate.setLastUpdateDate(DateUtil.getDate());
-
-        Long certificateId = certificateRepo.save(certificate).getId();
-        CertificateWithTag certificateWithTag = CertificateWithTag.builder()
-                .tagId(tagId)
-                .certificateId(certificateId)
-                .build();
-        return repo.save(certificateWithTag);
-    }
+//    /**
+//     * Creates new record of certificate with tag.
+//     * If tag doesn't exist, it will be created
+//     *
+//     * @param request - created certificate with tag request
+//     * @return {@link CertificateWithTag} created tag
+//     */
+//    @Transactional
+//    public CertificateWithTag create(CertificateWithTagRequest request) {
+//        log.info("Creating a new certificate with tag.");
+//
+//        // if tag exists in the database, tagId get from database
+//        // else a new tag will be created with new tagId
+//        Long tagId;
+//        Optional<Tag> optionalTag = tagRepo.findByName(request.getTags());
+//        if (optionalTag.isEmpty()) {
+//            Tag tag = Tag.builder()
+//                    .name(request.getTags())
+//                    .build();
+//            tagId = tagRepo.save(tag).getId();
+//        } else {
+//            tagId = optionalTag.get().getId();
+//        }
+//
+//        Certificate certificate = certificateMapper.toCertificate(request);
+//        certificate.setCreateDate(DateUtil.getDate());
+//        certificate.setLastUpdateDate(DateUtil.getDate());
+//
+//        Long certificateId = certificateRepo.save(certificate).getId();
+//        CertificateWithTag certificateWithTag = CertificateWithTag.builder()
+//                .tagId(tagId)
+//                .certificateId(certificateId)
+//                .build();
+//        return repo.save(certificateWithTag);
+//    }
 
     @Transactional
     public CertificateWithListOfTagsDTO create(CertificateWithListOfTagsRequest request) {
@@ -110,24 +110,6 @@ public class CertificateWithTagService{
         log.info("Getting all certificates with list of tags.");
         return certificateRepo.findAll(pageable).map(mapper::toDTO);
     }
-
-    /**
-     * Finds all certificates by tags name.
-     *
-     * @param pageable page parameters
-     * @param tagList list with tags
-     * @return List of {@link CertificateWithTag} List of all certificates with appropriate tag
-     */
-    @Transactional
-    public Page<CertificateWithTag> findByTagNames(Pageable pageable, List<String> tagList) {
-        log.info("Getting all certificates by tag.");
-        List<Long> tagIds = new ArrayList<>();
-        for (String name : tagList) {
-            tagRepo.findByName(name).ifPresent(tag -> tagIds.add(tag.getId()));
-        }
-        return repo.findByTagIds(tagIds, pageable);
-    }
-
 
     /**
      * Finds all certificates by array of tags and part of name/description.
